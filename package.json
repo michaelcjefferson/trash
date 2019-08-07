@@ -1,0 +1,19 @@
+{
+  "name": "trash",
+  "version": "1.0.0",
+  "description": "A game",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server/index.js",
+    "dev": "nodemon ./server/index.js"
+  },
+  "author": "Mike Ren and Michael Jefferson",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.5.0",
+    "datauri": "^2.0.0",
+    "express": "^4.17.1",
+    "jsdom": "^15.1.1",
+    "socket.io": "^2.2.0"
+  }
+}
