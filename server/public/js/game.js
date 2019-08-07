@@ -16,12 +16,15 @@ const game = new Phaser.Game(config);
 function preload() {
   this.load.image('ship', 'assets/spaceShips_001.png');
   this.load.image('otherPlayer', 'assets/enemyBlack5.png');
+  this.load.image('star', 'assets/star_gold.png');
 }
 
 function create() {
   const self = this;
   this.socket = io();
   this.players = this.add.group();
+  this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
+  this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
 
   // Handle currentPlayers broadcast from server - update players list and display them correctly
   this.socket.on('currentPlayers', function (players) {
@@ -58,6 +61,20 @@ function create() {
         }
       });
     });
+  });
+
+  // Handle score and star updates
+  this.socket.on('updateScore', function (scores) {
+    self.blueScoreText.setText('Blue: ' + scores.blue);
+    self.redScoreText.setText('Red: ' + scores.red);
+  });
+
+  this.socket.on('starLocation', function (starLocation) {
+    if (!self.star) {
+      self.star = self.add.image(starLocation.x, starLocation.y, 'star');
+    } else {
+      self.star.setPosition(starLocation.x, starLocation.y);
+    }
   });
 
   // Set up client-side controls which will be broadcast directly to server
