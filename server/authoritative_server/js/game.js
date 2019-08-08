@@ -109,17 +109,22 @@ function update() {
     const input = players[player.playerId].input;
 
     if (input.left) {
-      player.setAngularVelocity(-300);
+      player.setVelocityX(-300);
     } else if (input.right) {
-      player.setAngularVelocity(300);
+      player.setVelocityX(300);
     } else {
-      player.setAngularVelocity(0);
+      player.setVelocityX(0);
     }
 
     if (input.up) {
-      this.physics.velocityFromRotation(player.rotation + 1.5, 200, player.body.acceleration);
+      //this.physics.velocityFromRotation(player.rotation + 1.5, 200, player.body.acceleration);
+        player.setVelocityY(-300);
+    } else if (input.down) {
+      //this.physics.velocityFromRotation(player.rotation + 1.5, 200, player.body.acceleration);
+        player.setVelocityY(300);
     } else {
-      player.setAcceleration(0);
+      //player.setAcceleration(0);
+     player.setVelocityY(0);
     }
 
     players[player.playerId].x = player.x;
