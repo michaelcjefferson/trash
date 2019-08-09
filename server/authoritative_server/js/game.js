@@ -1,5 +1,45 @@
 const players = {};
 const cookies = {};
+const cookieProps = {
+  smlcrumb: {
+    type: 'smlcrumb',
+    url: 'assets/20x20_Crumb.png',
+    mass: 1
+  },
+  lrgcrumb: {
+    type: 'lrgcrumb',
+    url: 'assets/50x50_Crumb.png',
+    mass: 1.5
+  },
+  smlcookie: {
+    type: 'smlcookie',
+    url: 'assets/75x75_Cookie.png',
+    mass: 5
+  },
+  halfcookie: {
+    type: 'halfcookie',
+    url: 'assets/90x150_HalfCookie.png',
+    mass: 7
+  },
+  lrgcookie: {
+    type: 'lrgcookie',
+    url: 'assets/150x150_Cookie.png',
+    mass: 12
+  }
+}
+const obstacles = {};
+const obstacleProps = {
+  log: {
+    type: 'log',
+    url: 'assets/50x185_Log.png',
+    mass: 10
+  },
+  leaf: {
+    type: 'leaf',
+    url: 'assets/350x150_Leaf.png',
+    mass: 6
+  }  
+}
 
 const config = {
   // Headless server to be run on the server and control game logic, as opposed to rendering graphics on client browser
@@ -28,9 +68,17 @@ const config = {
 };
 
 function preload() {
-	// this.load.image('ship', 'assets/spaceShips_001.png');
-	// this.load.image('antplayer', 'assets/Antz_Player.jpg');
-  // this.load.image('star', 'assets/star_gold.png');
+  const self = this;
+
+  console.log(Object.keys(cookieProps));
+	Object.keys(cookieProps).forEach(function (item) {
+    console.log(cookieProps[item]);
+    console.log(cookieProps[item].type);
+    self.load.image(cookieProps[item].type, cookieProps[item].url);
+  });
+  Object.keys(obstacleProps).forEach(function (item) {
+    self.load.image(obstacleProps[item].type, obstacleProps[item].url);
+  });
   this.load.image('ant', 'assets/Antz_Player.jpg');
 }
 
@@ -43,6 +91,14 @@ function create() {
   this.players = this.add.group();
   //? Set up a collision category to add ants to
   this.antColliderGroup = this.matter.world.nextCategory();
+  //? Set up a group to add cookies to
+  this.cookies = this.add.group();
+  //? Set up a collision category to add cookies to
+  this.cookieColliderGroup = this.matter.world.nextCategory();
+  //? Set up a group to add obstacles to
+  this.obstacles = this.add.group();
+  //? Set up a collision category to add obstacles to
+  this.obstacleColliderGroup = this.matter.world.nextCategory();
 
   //? World bounds
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height);
@@ -56,6 +112,53 @@ function create() {
   // Add first star to map and give it collision physics
   //! this.star = this.physics.add.image(randomPosition(700), randomPosition(500), 'star');
   //! this.physics.add.collider(this.players);
+
+  // Add cookies to the world on generation
+  let startingCookies = 3;
+  for (const i of Array(startingCookies).keys()) {
+    // TODO: Create a starting position here, which needs to include a check to make sure that it won't spawn on top of something else, or that it pushes other items out of the way
+    // TODO: Create ID
+    let id = 0;
+    while (cookies[id]) {
+      id = randomNumber(10000);
+    }
+    // Add to cookies object with ID as the key
+    cookies[id] = {
+      // TODO: This is disgusting, make it pretty
+      type: Object.keys(cookieProps)[Math.floor(Object.keys(cookieProps).length * Math.random())],
+      cookieId: id,
+      // TODO: Randomise rotation
+      rotation: 0,
+      // TODO: Improve spawn randomisation
+      x: Math.floor(Math.random() * 700) + 50,
+      y: Math.floor(Math.random() * 500) + 50
+    };
+
+    addCookie(self, cookies[id]);
+  }
+
+  // Add obstacles to the world on generation
+  let startingObstacles = 1;
+  for (const i of Array(startingObstacles).keys()) {
+    // TODO: Create a starting position here, which needs to include a check to make sure that it won't spawn on top of something else, or that it pushes other items out of the way
+    // TODO: Create ID
+    let id = 0;
+    while (obstacles[id]) {
+      id = randomNumber(10000);
+    }
+    // Add to obstacles object with ID as the key
+    obstacles[id] = {
+      type: Object.keys(obstacleProps)[Math.floor(Object.keys(obstacleProps).length * Math.random())],
+      obstacleId: id,
+      // TODO: Randomise rotation
+      rotation: 0,
+      // TODO: Improve spawn randomisation
+      x: Math.floor(Math.random() * 700) + 50,
+      y: Math.floor(Math.random() * 500) + 50
+    };
+
+    addObstacle(self, obstacles[id]);
+  }
 
   // When a player touches a star (overlaps the star), a new score is calculated and broadcast, and a new star position is created and broadcast
   //! this.physics.add.overlap(this.players, this.star, function (star, player) {
@@ -92,12 +195,20 @@ function create() {
     addPlayer(self, players[socket.id]);
     // Send the players object (full list of current players) to the new player
     socket.emit('currentPlayers', players);
+    // Send the cookies object to the new player
+    socket.emit('currentCookies', cookies);
+    // Send the obstacles object to the new player
+    socket.emit('currentObstacles', obstacles);
     // Update all other players with the new player
     socket.broadcast.emit('newPlayer', players[socket.id]);
 
     // Update game scores
     //! socket.emit('starLocation', { x: self.star.x, y: self.star.y });
     //! socket.emit('updateScore', self.scores);
+
+    // TODO: Update cookie locations
+
+    // TODO: Update obstacle locations
 
     // Handle disconnect
     socket.on('disconnect', function () {
@@ -149,11 +260,11 @@ function update() {
 // Logic to add a player object to the game, called in create()
 function addPlayer(self, playerInfo) {
   const player = self.matter.add.image(playerInfo.x, playerInfo.y, 'ant').setOrigin(0.5, 0.5);
-  player.setBody({
-    type: 'rectangle',
-    width: 11,
-    height: 11
-  });
+  // player.setBody({
+  //   type: 'rectangle',
+  //   width: 11,
+  //   height: 11
+  // });
   //* This value manipulates top speed - lower value = higher top speed
   player.setFrictionAir(0.4);
   //* This value manipulates acceleration - lower value = higher acceleration
@@ -179,8 +290,30 @@ function handlePlayerInput(self, playerId, input) {
   });
 }
 
+function addCookie(self, cookieInfo) {
+  const cookie = self.matter.add.image(cookieInfo.x, cookieInfo.y, cookieInfo.type).setOrigin(0.5, 0.5);
+  cookie.setFrictionAir(0.4);
+  cookie.setMass(cookieInfo.mass);
+  cookie.setCollisionCategory(self.cookieColliderGroup);
+  cookie.cookieId = cookieInfo.cookieId;
+  self.cookies.add(cookie);
+}
+
+function addObstacle(self, obstacleInfo) {
+  const obstacle = self.matter.add.image(obstacleInfo.x, obstacleInfo.y, obstacleInfo.type).setOrigin(0.5, 0.5);
+  obstacle.setFrictionAir(0.4);
+  obstacle.setMass(obstacleInfo.mass);
+  obstacle.setCollisionCategory(self.obstacleColliderGroup);
+  obstacle.obstacleId = obstacleInfo.obstacleId;
+  self.obstacles.add(obstacle);
+}
+
 function randomPosition(max) {
   return Math.floor(Math.random() * max) + 50;
+}
+
+function randomNumber(max) {
+  return Math.floor(Math.random() * max);
 }
 
 const game = new Phaser.Game(config);

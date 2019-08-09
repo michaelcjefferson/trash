@@ -14,11 +14,14 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-	// this.load.image('antPlayer', 'assets/Antz_Player.jpg');
-	// this.load.image('otherPlayer', 'assets/Other_Antz_Player.jpg');
-  // this.load.image('ship', 'assets/spaceShips_001.png');
-  // this.load.image('otherPlayer', 'assets/enemyBlack5.png');
-  // this.load.image('star', 'assets/star_gold.png');
+  // TODO: Put all cookie and obstacle info in a separate dictionary to be imported by each file and iterated over
+  this.load.image('smlcrumb', 'assets/20x20_Crumb.png');
+  this.load.image('lrgcrumb', 'assets/50x50_Crumb.png');
+  this.load.image('smlcookie', 'assets/75x75_Cookie.png');
+  this.load.image('halfcookie', 'assets/90x150_HalfCookie.png');
+  this.load.image('lrgcookie', 'assets/150x150_Cookie.png');
+  this.load.image('log', 'assets/50x185_Log.png');
+  this.load.image('leaf', 'assets/350x150_Leaf.png');
   this.load.image('ant', 'assets/Antz_Player.jpg');
 }
 
@@ -26,6 +29,8 @@ function create() {
   const self = this;
   this.socket = io();
   this.players = this.add.group();
+  this.cookies = this.add.group();
+  this.obstacles = this.add.group();
 
   // Change background colour here
   // this.cameras.main.setBackgroundColor('#555555');
@@ -41,6 +46,20 @@ function create() {
       } else {
         displayPlayers(self, players[id], 'ant');
       }
+    });
+  });
+
+  // Handle currentCookies broadcast from server - update cookies list and display them correctly
+  this.socket.on('currentCookies', function (cookies) {
+    Object.keys(cookies).forEach(function (id) {
+      displayCookies(self, cookies[id], cookies[id].type);
+    });
+  });
+
+  // Handle currentObstacles broadcast from server - update obstacles list and display them correctly
+  this.socket.on('currentObstacles', function (obstacles) {
+    Object.keys(obstacles).forEach(function (id) {
+      displayObstacles(self, obstacles[id], obstacles[id].type);
     });
   });
 
@@ -132,4 +151,16 @@ function displayPlayers(self, playerInfo, sprite) {
   }
   player.playerId = playerInfo.playerId;
   self.players.add(player);
+}
+
+function displayCookies(self, cookieInfo, sprite) {
+  const cookie = self.add.sprite(cookieInfo.x, cookieInfo.y, sprite).setOrigin(0.5, 0.5);
+  cookie.cookieId = cookieInfo.cookieId;
+  self.cookies.add(cookie);
+}
+
+function displayObstacles(self, obstacleInfo, sprite) {
+  const obstacle = self.add.sprite(obstacleInfo.x, obstacleInfo.y, sprite).setOrigin(0.5, 0.5);
+  obstacle.obstacleId = obstacleInfo.obstacleId;
+  self.obstacles.add(obstacle);
 }
