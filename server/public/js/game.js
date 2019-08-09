@@ -14,8 +14,10 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  this.load.image('ship', 'assets/spaceShips_001.png');
-  this.load.image('otherPlayer', 'assets/enemyBlack5.png');
+	this.load.image('antPlayer', 'assets/Antz_Player.jpg');
+	this.load.image('otherPlayer', 'assets/Other_Antz_Player.jpg');
+  //this.load.image('ship', 'assets/spaceShips_001.png');
+ // this.load.image('otherPlayer', 'assets/enemyBlack5.png');
   this.load.image('star', 'assets/star_gold.png');
 }
 
@@ -30,7 +32,7 @@ function create() {
   this.socket.on('currentPlayers', function (players) {
     Object.keys(players).forEach(function (id) {
       if (players[id].playerId === self.socket.id) {
-        displayPlayers(self, players[id], 'ship');
+        displayPlayers(self, players[id], 'antPlayer');
       } else {
         displayPlayers(self, players[id], 'otherPlayer');
       }
@@ -117,7 +119,7 @@ function update() {
 }
 
 function displayPlayers(self, playerInfo, sprite) {
-  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setOrigin(0.5, 0.5).setDisplaySize(10, 10);
   if (playerInfo.team === 'blue') {
     player.setTint(0x0000ff)
   } else {

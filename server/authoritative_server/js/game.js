@@ -24,7 +24,8 @@ const config = {
 };
 
 function preload() {
-  this.load.image('ship', 'assets/spaceShips_001.png');
+	//this.load.image('ship', 'assets/spaceShips_001.png');
+	this.load.image('antplayer', 'assets/Antz_Player.jpg');
   this.load.image('star', 'assets/star_gold.png');
 }
 
@@ -70,7 +71,8 @@ function create() {
       input: {
         left: false,
         right: false,
-        up: false
+		up: false,
+		down: false,
       }
     };
 
@@ -129,7 +131,7 @@ function update() {
 
     players[player.playerId].x = player.x;
     players[player.playerId].y = player.y;
-    players[player.playerId].rotation = player.rotation;
+    //players[player.playerId].rotation = player.rotation;
   });
 
   // Allow players to enter left side of screen from right side
@@ -141,7 +143,7 @@ function update() {
 // Logic to add a player object to the game, called in create()
 function addPlayer(self, playerInfo) {
   // The 'physics' word below allows the image to use the arcade physics previously set up
-  const player = self.physics.add.image(playerInfo.x, playerInfo.y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+  const player = self.physics.add.image(playerInfo.x, playerInfo.y, 'antplayer').setOrigin(0.5, 0.5).setDisplaySize(10, 10);
   player.setDrag(100);
   player.setAngularDrag(100);
   player.setMaxVelocity(200);
