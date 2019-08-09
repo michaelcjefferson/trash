@@ -1,5 +1,5 @@
-# Trash
-### A game about sorting the trash from the trash
+# Ants.io
+### A game about being an ant
 ## Setup
 Make sure that [Node version 10.16.2](https://nodejs.org/en/download/) is installed on your computer. Once it's installed, check that it is working correctly by opening a terminal and running:
 `node --version`.
