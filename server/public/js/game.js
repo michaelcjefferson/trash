@@ -14,9 +14,11 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  this.load.image('ship', 'assets/spaceShips_001.png');
-  this.load.image('otherPlayer', 'assets/enemyBlack5.png');
-  this.load.image('star', 'assets/star_gold.png');
+	// this.load.image('antPlayer', 'assets/Antz_Player.jpg');
+	// this.load.image('otherPlayer', 'assets/Other_Antz_Player.jpg');
+  // this.load.image('ship', 'assets/spaceShips_001.png');
+  // this.load.image('otherPlayer', 'assets/enemyBlack5.png');
+  // this.load.image('star', 'assets/star_gold.png');
   this.load.image('ant', 'assets/Antz_Player.jpg');
 }
 
@@ -87,12 +89,14 @@ function create() {
   this.leftKeyPressed = false;
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
+  this.downKeyPressed = false;
 }
 
 function update() {
   const left = this.leftKeyPressed;
   const right = this.rightKeyPressed;
   const up = this.upKeyPressed;
+  const down = this.downKeyPressed;
 
   if (this.cursors.left.isDown) {
     this.leftKeyPressed = true;
@@ -105,13 +109,17 @@ function update() {
 
   if (this.cursors.up.isDown) {
     this.upKeyPressed = true;
-  } else {
+  } else if (this.cursors.down.isDown) {
+    this.downKeyPressed = true;
+  } else
+    {
     this.upKeyPressed = false;
-  }
+    this.downKeyPressed = false;
+    }
 
   // Check for changes between previous inputs and current ones, and if one is found, update the server
-  if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
-    this.socket.emit('playerInput', { left: this.leftKeyPressed, right: this.rightKeyPressed, up: this.upKeyPressed });
+  if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed|| down !== this.downKeyPressed) {
+    this.socket.emit('playerInput', { left: this.leftKeyPressed, right: this.rightKeyPressed, up: this.upKeyPressed, down: this.downKeyPressed });
   }
 }
 

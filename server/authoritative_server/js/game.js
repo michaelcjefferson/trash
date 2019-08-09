@@ -28,8 +28,9 @@ const config = {
 };
 
 function preload() {
-  this.load.image('ship', 'assets/spaceShips_001.png');
-  this.load.image('star', 'assets/star_gold.png');
+	// this.load.image('ship', 'assets/spaceShips_001.png');
+	// this.load.image('antplayer', 'assets/Antz_Player.jpg');
+  // this.load.image('star', 'assets/star_gold.png');
   this.load.image('ant', 'assets/Antz_Player.jpg');
 }
 
@@ -82,7 +83,8 @@ function create() {
       input: {
         left: false,
         right: false,
-        up: false
+		    up: false,
+		    down: false,
       }
     };
 
@@ -127,7 +129,7 @@ function update() {
     } else if (input.right) {
       player.setAngularVelocity(0.15);
     } else {
-      player.setAngularVelocity(0);
+      player.setVelocityX(0);
     }
 
     if (input.up) {
