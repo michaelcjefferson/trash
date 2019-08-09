@@ -17,12 +17,17 @@ function preload() {
   this.load.image('ship', 'assets/spaceShips_001.png');
   this.load.image('otherPlayer', 'assets/enemyBlack5.png');
   this.load.image('star', 'assets/star_gold.png');
+  this.load.image('ant', 'assets/Antz_Player.jpg');
 }
 
 function create() {
   const self = this;
   this.socket = io();
   this.players = this.add.group();
+
+  // Change background colour here
+  // this.cameras.main.setBackgroundColor('#555555');
+
   this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
   this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
 
@@ -30,16 +35,16 @@ function create() {
   this.socket.on('currentPlayers', function (players) {
     Object.keys(players).forEach(function (id) {
       if (players[id].playerId === self.socket.id) {
-        displayPlayers(self, players[id], 'ship');
+        displayPlayers(self, players[id], 'ant');
       } else {
-        displayPlayers(self, players[id], 'otherPlayer');
+        displayPlayers(self, players[id], 'ant');
       }
     });
   });
 
   // Handle newPlayer broadcast from server - add new player to display
   this.socket.on('newPlayer', function (playerInfo) {
-    displayPlayers(self, playerInfo, 'otherPlayer');
+    displayPlayers(self, playerInfo, 'ant');
   })
 
   // Handle disconnect broadcast from server - remove players as they disconnect
@@ -111,7 +116,7 @@ function update() {
 }
 
 function displayPlayers(self, playerInfo, sprite) {
-  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setOrigin(0.5, 0.5);
   if (playerInfo.team === 'blue') {
     player.setTint(0x0000ff)
   } else {

@@ -1,4 +1,5 @@
 const players = {};
+const cookies = {};
 
 const config = {
   // Headless server to be run on the server and control game logic, as opposed to rendering graphics on client browser
@@ -8,10 +9,13 @@ const config = {
   height: 600,
   // Set up physics
   physics: {
-    default: 'arcade',
-    arcade: {
+    default: 'matter',
+    matter: {
       debug: false,
-      gravity: { y: 0 }
+      gravity: {
+        x: 0,
+        y: 0
+      }
     }
   },
   scene: {
@@ -26,13 +30,21 @@ const config = {
 function preload() {
   this.load.image('ship', 'assets/spaceShips_001.png');
   this.load.image('star', 'assets/star_gold.png');
+  this.load.image('ant', 'assets/Antz_Player.jpg');
 }
 
 function create() {
   // Save this instance of Phaser so that it can be referenced within nested functions
   const self = this;
+
   // Enable Phaser to control all players in a grouped manner (use same logic etc.) so that collision check can be done once on the group rather than individually
-  this.players = this.physics.add.group();
+  //? Set up a group to add ants to
+  this.players = this.add.group();
+  //? Set up a collision category to add ants to
+  this.antColliderGroup = this.matter.world.nextCategory();
+
+  //? World bounds
+  this.matter.world.setBounds(0, 0, game.config.width, game.config.height);
 
   // Set up score tracker
   this.scores = {
@@ -41,20 +53,20 @@ function create() {
   };
 
   // Add first star to map and give it collision physics
-  this.star = this.physics.add.image(randomPosition(700), randomPosition(500), 'star');
-  this.physics.add.collider(this.players);
+  //! this.star = this.physics.add.image(randomPosition(700), randomPosition(500), 'star');
+  //! this.physics.add.collider(this.players);
 
   // When a player touches a star (overlaps the star), a new score is calculated and broadcast, and a new star position is created and broadcast
-  this.physics.add.overlap(this.players, this.star, function (star, player) {
-    if (players[player.playerId].team === 'red') {
-      self.scores.red += 10;
-    } else {
-      self.scores.blue += 10;
-    }
-    self.star.setPosition(randomPosition(700), randomPosition(500));
-    io.emit('updateScore', self.scores);
-    io.emit('starLocation', { x: self.star.x, y: self.star.y});
-  })
+  //! this.physics.add.overlap(this.players, this.star, function (star, player) {
+  //   if (players[player.playerId].team === 'red') {
+  //     self.scores.red += 10;
+  //   } else {
+  //     self.scores.blue += 10;
+  //   }
+  //   self.star.setPosition(randomPosition(700), randomPosition(500));
+  //   io.emit('updateScore', self.scores);
+  //   io.emit('starLocation', { x: self.star.x, y: self.star.y});
+  //! })
 
   // Socket.io is exposed to this instance in index.js
   // Handle connect
@@ -82,8 +94,8 @@ function create() {
     socket.broadcast.emit('newPlayer', players[socket.id]);
 
     // Update game scores
-    socket.emit('starLocation', { x: self.star.x, y: self.star.y });
-    socket.emit('updateScore', self.scores);
+    //! socket.emit('starLocation', { x: self.star.x, y: self.star.y });
+    //! socket.emit('updateScore', self.scores);
 
     // Handle disconnect
     socket.on('disconnect', function () {
@@ -106,20 +118,22 @@ function create() {
 function update() {
   // Handle input changes
   this.players.getChildren().forEach((player) => {
-    const input = players[player.playerId].input;
+  const input = players[player.playerId].input;
+
+  //* Rotation controls. Set up compass controls below and test both
 
     if (input.left) {
-      player.setAngularVelocity(-300);
+      player.setAngularVelocity(-0.15);
     } else if (input.right) {
-      player.setAngularVelocity(300);
+      player.setAngularVelocity(0.15);
     } else {
       player.setAngularVelocity(0);
     }
 
     if (input.up) {
-      this.physics.velocityFromRotation(player.rotation + 1.5, 200, player.body.acceleration);
+      player.thrust(0.005);
     } else {
-      player.setAcceleration(0);
+      player.thrust(0);
     }
 
     players[player.playerId].x = player.x;
@@ -127,19 +141,22 @@ function update() {
     players[player.playerId].rotation = player.rotation;
   });
 
-  // Allow players to enter left side of screen from right side
-  this.physics.world.wrap(this.players, 5);
-
   io.emit('playerUpdates', players);
 }
 
 // Logic to add a player object to the game, called in create()
 function addPlayer(self, playerInfo) {
-  // The 'physics' word below allows the image to use the arcade physics previously set up
-  const player = self.physics.add.image(playerInfo.x, playerInfo.y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-  player.setDrag(100);
-  player.setAngularDrag(100);
-  player.setMaxVelocity(200);
+  const player = self.matter.add.image(playerInfo.x, playerInfo.y, 'ant').setOrigin(0.5, 0.5);
+  player.setBody({
+    type: 'rectangle',
+    width: 11,
+    height: 11
+  });
+  //* This value manipulates top speed - lower value = higher top speed
+  player.setFrictionAir(0.4);
+  //* This value manipulates acceleration - lower value = higher acceleration
+  player.setMass(1)
+  player.setCollisionCategory(self.antColliderGroup);
   player.playerId = playerInfo.playerId;
   self.players.add(player);
 }
