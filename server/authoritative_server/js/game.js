@@ -129,7 +129,7 @@ function update() {
     } else if (input.right) {
       player.setAngularVelocity(0.15);
     } else {
-      player.setVelocityX(0);
+      player.setAngularVelocity(0);
     }
 
     if (input.up) {
