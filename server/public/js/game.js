@@ -1,9 +1,10 @@
 const config = {
   // Will automatically default to display mode i.e. render graphics
   type: Phaser.AUTO,
-  parent: 'phaser-example',
+  parent: 'antz-io',
   width: 800,
   height: 600,
+  backgroundColor: '#EFDFD0',
   scene: {
     preload: preload,
     create: create,
@@ -28,80 +29,98 @@ function preload() {
 function create() {
   const self = this;
   this.socket = io();
-  this.players = this.add.group();
-  this.cookies = this.add.group();
-  this.obstacles = this.add.group();
+  this.objects = this.add.group();
+  // this.cookies = this.add.group();
+  // this.obstacles = this.add.group();
 
-  // Change background colour here
-  // this.cameras.main.setBackgroundColor('#555555');
 
-  this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
-  this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
+  // this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
+  // this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
 
   // Handle currentPlayers broadcast from server - update players list and display them correctly
-  this.socket.on('currentPlayers', function (players) {
-    Object.keys(players).forEach(function (id) {
-      if (players[id].playerId === self.socket.id) {
-        displayPlayers(self, players[id], 'ant');
+  this.socket.on('currentObjects', function (objects) {
+    Object.keys(objects).forEach(function (id) {
+      if (objects[id].objectId === self.socket.id) {
+        displayObjects(self, objects[id], 'ant');
       } else {
-        displayPlayers(self, players[id], 'ant');
+        displayObjects(self, objects[id], objects[id].type);
       }
     });
   });
 
   // Handle currentCookies broadcast from server - update cookies list and display them correctly
-  this.socket.on('currentCookies', function (cookies) {
-    Object.keys(cookies).forEach(function (id) {
-      displayCookies(self, cookies[id], cookies[id].type);
-    });
-  });
+  // this.socket.on('currentCookies', function (cookies) {
+  //   Object.keys(cookies).forEach(function (id) {
+  //     displayCookies(self, cookies[id], cookies[id].type);
+  //   });
+  // });
 
   // Handle currentObstacles broadcast from server - update obstacles list and display them correctly
-  this.socket.on('currentObstacles', function (obstacles) {
-    Object.keys(obstacles).forEach(function (id) {
-      displayObstacles(self, obstacles[id], obstacles[id].type);
-    });
-  });
+  // this.socket.on('currentObstacles', function (obstacles) {
+  //   Object.keys(obstacles).forEach(function (id) {
+  //     displayObstacles(self, obstacles[id], obstacles[id].type);
+  //   });
+  // });
 
   // Handle newPlayer broadcast from server - add new player to display
   this.socket.on('newPlayer', function (playerInfo) {
-    displayPlayers(self, playerInfo, 'ant');
+    displayObjects(self, playerInfo, 'ant');
   })
 
   // Handle disconnect broadcast from server - remove players as they disconnect
   this.socket.on('disconnect', function (playerId) {
-    self.players.getChildren().forEach(function (player) {
-      if (playerId === player.playerId) {
+    self.objects.getChildren().forEach(function (player) {
+      if (playerId === player.objectId) {
         player.destroy();
       }
     });
   });
 
-  // Handle all players' movements
-  this.socket.on('playerUpdates', function (players) {
-    Object.keys(players).forEach(function (id) {
-      self.players.getChildren().forEach(function (player) {
-        if (players[id].playerId === player.playerId) {
-          player.setRotation(players[id].rotation);
-          player.setPosition(players[id].x, players[id].y);
+  // Handle all objects' movements
+  this.socket.on('objectUpdates', function (objects) {
+    Object.keys(objects).forEach(function (id) {
+      self.objects.getChildren().forEach(function (object) {
+        if (objects[id].objectId === object.objectId) {
+          object.setRotation(objects[id].rotation);
+          object.setPosition(objects[id].x, objects[id].y);
         }
       });
     });
   });
 
-  // Handle score and star updates
-  this.socket.on('updateScore', function (scores) {
-    self.blueScoreText.setText('Blue: ' + scores.blue);
-    self.redScoreText.setText('Red: ' + scores.red);
-  });
+  // Handle movements of cookies and obstacles
+  // this.socket.on('cookieObstacleUpdates', function (cookies, obstacles) {
+  //   Object.keys(cookies).forEach(function (id) {
+  //     self.cookies.getChildren().forEach(function (cookie) {
+  //       if (cookies[id].cookieId === cookie.cookieId) {
+  //         cookie.setRotation(cookies[id].rotation);
+  //         cookie.setPosition(cookies[id].x, cookies[id].y);
+  //       }
+  //     });
+  //   });
+  //   Object.keys(obstacles).forEach(function (id) {
+  //     self.obstacles.getChildren().forEach(function (obstacle) {
+  //       if (obstacles[id].obstacleId === obstacle.obstacleId) {
+  //         obstacle.setRotation(obstacles[id].rotation);
+  //         obstacle.setPosition(obstacles[id].x, obstacles[id].y);
+  //       }
+  //     });
+  //   });
+  // });
 
-  this.socket.on('starLocation', function (starLocation) {
-    if (!self.star) {
-      self.star = self.add.image(starLocation.x, starLocation.y, 'star');
-    } else {
-      self.star.setPosition(starLocation.x, starLocation.y);
-    }
-  });
+  // Handle score and star updates
+  // this.socket.on('updateScore', function (scores) {
+  //   self.blueScoreText.setText('Blue: ' + scores.blue);
+  //   self.redScoreText.setText('Red: ' + scores.red);
+  // });
+
+  // this.socket.on('starLocation', function (starLocation) {
+  //   if (!self.star) {
+  //     self.star = self.add.image(starLocation.x, starLocation.y, 'star');
+  //   } else {
+  //     self.star.setPosition(starLocation.x, starLocation.y);
+  //   }
+  // });
 
   // Set up client-side controls which will be broadcast directly to server
   this.cursors = this.input.keyboard.createCursorKeys();
@@ -138,29 +157,32 @@ function update() {
 
   // Check for changes between previous inputs and current ones, and if one is found, update the server
   if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed|| down !== this.downKeyPressed) {
+    console.log('Client called playerInput')
     this.socket.emit('playerInput', { left: this.leftKeyPressed, right: this.rightKeyPressed, up: this.upKeyPressed, down: this.downKeyPressed });
   }
 }
 
-function displayPlayers(self, playerInfo, sprite) {
-  const player = self.add.sprite(playerInfo.x, playerInfo.y, sprite).setOrigin(0.5, 0.5);
-  if (playerInfo.team === 'blue') {
-    player.setTint(0x0000ff)
-  } else {
-    player.setTint(0xff0000);
+function displayObjects(self, objectInfo, sprite) {
+  const object = self.add.sprite(objectInfo.x, objectInfo.y, sprite).setOrigin(0.5, 0.5);
+  if (objectInfo.team) {
+    if (objectInfo.team === 'blue') {
+      object.setTint(0x0000ff)
+    } else {
+      object.setTint(0xff0000);
+    }
   }
-  player.playerId = playerInfo.playerId;
-  self.players.add(player);
+  object.objectId = objectInfo.objectId;
+  self.objects.add(object);
 }
 
-function displayCookies(self, cookieInfo, sprite) {
-  const cookie = self.add.sprite(cookieInfo.x, cookieInfo.y, sprite).setOrigin(0.5, 0.5);
-  cookie.cookieId = cookieInfo.cookieId;
-  self.cookies.add(cookie);
-}
+// function displayCookies(self, cookieInfo, sprite) {
+//   const cookie = self.add.sprite(cookieInfo.x, cookieInfo.y, sprite).setOrigin(0.5, 0.5);
+//   cookie.cookieId = cookieInfo.cookieId;
+//   self.cookies.add(cookie);
+// }
 
-function displayObstacles(self, obstacleInfo, sprite) {
-  const obstacle = self.add.sprite(obstacleInfo.x, obstacleInfo.y, sprite).setOrigin(0.5, 0.5);
-  obstacle.obstacleId = obstacleInfo.obstacleId;
-  self.obstacles.add(obstacle);
-}
+// function displayObstacles(self, obstacleInfo, sprite) {
+//   const obstacle = self.add.sprite(obstacleInfo.x, obstacleInfo.y, sprite).setOrigin(0.5, 0.5);
+//   obstacle.obstacleId = obstacleInfo.obstacleId;
+//   self.obstacles.add(obstacle);
+// }

@@ -21,3 +21,8 @@ To get realtime console.logs and other information about the Node server, naviga
 [Complex physics in Phaser 3](https://www.codeandweb.com/physicseditor/tutorials/how-to-create-physics-shapes-for-phaser-3-and-matterjs)
 
 [Mario-style platformer in Phaser 3](https://gamedevacademy.org/how-to-make-a-mario-style-platformer-with-phaser-3/?a=13)
+
+## Current bugs to fix
+- World bounds are no longer working
+- Collisions aren't working (things to check - client-side cookieObstacleUpdate function, server-side collision groups and info passed to client)
+- Ant now has a dark triangle overlaid
