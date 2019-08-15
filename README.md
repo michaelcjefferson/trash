@@ -15,6 +15,8 @@ Navigate to localhost:3000 in your browser, and you should be able to see the ga
 
 To get realtime console.logs and other information about the Node server, navigate to chrome://inspect/#devices in your browser, and click 'Open dedicated DevTools for Node'. This will open a new window with the dedicated DevTools. Very handy.
 
+There are currently two .js files on the server side - one with comments and all test code, and one clean version which can be quickly read and manipulated. Two choose which one should be served, go to authoritative_server/index.html, and change the link in the `<script>` file from one to the other.
+
 ## Tutorial Sources
 [Multiplayer with Phaser 3](https://phasertutorials.com/creating-a-simple-multiplayer-game-in-phaser-3-with-an-authoritative-server-part-1/)
 
@@ -22,7 +24,4 @@ To get realtime console.logs and other information about the Node server, naviga
 
 [Mario-style platformer in Phaser 3](https://gamedevacademy.org/how-to-make-a-mario-style-platformer-with-phaser-3/?a=13)
 
-## Current bugs to fix
-- World bounds are no longer working
-- Collisions aren't working (things to check - client-side cookieObstacleUpdate function, server-side collision groups and info passed to client)
-- Ant now has a dark triangle overlaid
+[Multiplayer with Matter JS physics in Phaser 3](https://github.com/yandeu/phaser3-multiplayer-with-physics)

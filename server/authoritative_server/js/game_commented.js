@@ -2,27 +2,27 @@ const objects = {};
 // const cookies = {};
 const cookieProps = {
   smlcrumb: {
-    type: 'smlcrumb',
+    detail: 'smlcrumb',
     url: 'assets/20x20_Crumb.png',
     mass: 1
   },
   lrgcrumb: {
-    type: 'lrgcrumb',
+    detail: 'lrgcrumb',
     url: 'assets/50x50_Crumb.png',
     mass: 1.5
   },
   smlcookie: {
-    type: 'smlcookie',
+    detail: 'smlcookie',
     url: 'assets/75x75_Cookie.png',
     mass: 5
   },
   halfcookie: {
-    type: 'halfcookie',
+    detail: 'halfcookie',
     url: 'assets/90x150_HalfCookie.png',
     mass: 7
   },
   lrgcookie: {
-    type: 'lrgcookie',
+    detail: 'lrgcookie',
     url: 'assets/150x150_Cookie.png',
     mass: 12
   }
@@ -30,12 +30,12 @@ const cookieProps = {
 // const obstacles = {};
 const obstacleProps = {
   log: {
-    type: 'log',
+    detail: 'log',
     url: 'assets/50x185_Log.png',
     mass: 10
   },
   leaf: {
-    type: 'leaf',
+    detail: 'leaf',
     url: 'assets/350x150_Leaf.png',
     mass: 6
   }  
@@ -51,7 +51,7 @@ const config = {
   physics: {
     default: 'matter',
     matter: {
-      debug: false,
+      debug: true,
       gravity: {
         x: 0,
         y: 0
@@ -70,13 +70,19 @@ const config = {
 function preload() {
   const self = this;
 
-	Object.keys(cookieProps).forEach(function (item) {
-    self.load.image(cookieProps[item].type, cookieProps[item].url);
-  });
-  Object.keys(obstacleProps).forEach(function (item) {
-    self.load.image(obstacleProps[item].type, obstacleProps[item].url);
-  });
-
+	// Object.keys(cookieProps).forEach(function (item) {
+  //   self.load.image(cookieProps[item].type, cookieProps[item].url);
+  // });
+  // Object.keys(obstacleProps).forEach(function (item) {
+  //   self.load.image(obstacleProps[item].type, obstacleProps[item].url);
+  // });
+  this.load.image('smlcrumb', 'assets/20x20_Crumb.png');
+  this.load.image('lrgcrumb', 'assets/50x50_Crumb.png');
+  this.load.image('smlcookie', 'assets/75x75_Cookie.png');
+  this.load.image('halfcookie', 'assets/90x150_HalfCookie.png');
+  this.load.image('lrgcookie', 'assets/150x150_Cookie.png');
+  this.load.image('log', 'assets/50x185_Log.png');
+  this.load.image('leaf', 'assets/350x150_Leaf.png');
   this.load.image('ant', 'assets/Antz_Player.jpg');
 }
 
@@ -104,63 +110,88 @@ function create() {
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height);
 
   // Set up score tracker
-  this.scores = {
-    blue: 0,
-    red: 0
-  };
+  // this.scores = {
+  //   blue: 0,
+  //   red: 0
+  // };
 
   // Add first star to map and give it collision physics
   //! this.star = this.physics.add.image(randomPosition(700), randomPosition(500), 'star');
   //! this.physics.add.collider(this.players);
 
   // Add cookies to the world on generation
-  let startingCookies = 3;
-  for (const i of Array(startingCookies).keys()) {
+  /*let startingCookies = {
+    quantity: 3,
+    xPositions: [100, 600, 650],
+    yPositions: [400, 100, 450]
+  }
+
+  for (const i of Array(startingCookies.quantity).keys()) {
     // TODO: Create a starting position here, which needs to include a check to make sure that it won't spawn on top of something else, or that it pushes other items out of the way
     // TODO: Create ID
-    let id = 0;
+    let id = 'o0';
     while (objects[id]) {
-      id = randomNumber(10000);
+      id = 'o' + randomNumber(10000);
     }
     // Add to cookies object with ID as the key
     objects[id] = {
       base: 'cookie',
       // TODO: This is disgusting, make it pretty
-      type: Object.keys(cookieProps)[Math.floor(Object.keys(cookieProps).length * Math.random())],
+      detail: Object.keys(cookieProps)[Math.floor(Object.keys(cookieProps).length * Math.random())],
       objectId: id,
       // TODO: Randomise rotation
       rotation: 0,
       // TODO: Improve spawn randomisation
-      x: Math.floor(Math.random() * 700) + 50,
-      y: Math.floor(Math.random() * 500) + 50
+      // x: Math.floor(Math.random() * 700) + 50,
+      // y: Math.floor(Math.random() * 500) + 50
+      x: startingCookies.xPositions[i],
+      y: startingCookies.yPositions[i]
     };
 
     addCookie(self, objects[id]);
-  }
+  }*/
 
   // Add obstacles to the world on generation
-  let startingObstacles = 1;
-  for (const i of Array(startingObstacles).keys()) {
+  let startingObstacles = {
+    quantity: 1,
+    xPositions: [500],
+    yPositions: [300]
+  }
+
+  for (const i of Array(startingObstacles.quantity).keys()) {
     // TODO: Create a starting position here, which needs to include a check to make sure that it won't spawn on top of something else, or that it pushes other items out of the way
     // TODO: Create ID
-    let id = 1;
+    let id = 'o1';
     while (objects[id]) {
-      id = randomNumber(10000);
+      id = 'o' + randomNumber(10000);
     }
     // Add to obstacles object with ID as the key
     objects[id] = {
       base: 'obstacle',
-      type: Object.keys(obstacleProps)[Math.floor(Object.keys(obstacleProps).length * Math.random())],
+      detail: Object.keys(obstacleProps)[Math.floor(Object.keys(obstacleProps).length * Math.random())],
       objectId: id,
       // TODO: Randomise rotation
       rotation: 0,
       // TODO: Improve spawn randomisation
-      x: Math.floor(Math.random() * 700) + 50,
-      y: Math.floor(Math.random() * 500) + 50
+      // x: Math.floor(Math.random() * 700) + 50,
+      // y: Math.floor(Math.random() * 500) + 50
+      x: startingObstacles.xPositions[i],
+      y: startingObstacles.yPositions[i]
     };
 
     addObstacle(self, objects[id]);
   }
+
+  objects['antTest'] = {
+    base: 'test',
+    detail: 'smlcookie',
+    rotation: 0,
+    x: Math.floor(Math.random() * 700) + 50,
+    y: Math.floor(Math.random() * 500) + 50,
+    objectId: 'antTest'
+  };
+
+  addTest(self, objects['antTest'])
 
   // When a player touches a star (overlaps the star), a new score is calculated and broadcast, and a new star position is created and broadcast
   //! this.physics.add.overlap(this.players, this.star, function (star, player) {
@@ -181,7 +212,7 @@ function create() {
     // Create a new player and add it to the players object
     objects[socket.id] = {
       base: 'player',
-      type: 'ant',
+      detail: 'ant',
       rotation: 0,
       x: Math.floor(Math.random() * 700) + 50,
       y: Math.floor(Math.random() * 500) + 50,
@@ -194,6 +225,7 @@ function create() {
 		    down: false,
       }
     };
+    // console.log("objects", objects)
 
     // Add player to server
     addPlayer(self, objects[socket.id]);
@@ -227,7 +259,7 @@ function create() {
 
     // Handle player inputs
     socket.on('playerInput', function (inputData) {
-      console.log('Server received playerInput')
+      // console.log('Server received playerInput')
       handlePlayerInput(self, socket.id, inputData);
     });
   })
@@ -236,7 +268,6 @@ function create() {
 function update() {
   // Handle input changes
   this.objects.getChildren().forEach((object) => {
-    // console.log(object.base)
     if (object.base === 'player') {
       const input = objects[object.objectId].input;
 
@@ -251,8 +282,6 @@ function update() {
       }
 
       if (input.up) {
-        //! This is the culprit - object.base doesn't exist, because this.objects isn't the same as the objects declared with a base
-        console.log('Input up noticed')
         object.thrust(0.005);
       } else {
         object.thrust(0);
@@ -261,8 +290,18 @@ function update() {
       objects[object.objectId].x = object.x;
       objects[object.objectId].y = object.y;
       objects[object.objectId].rotation = object.rotation;
+    // }
+    } else {
+      object.setAngularVelocity(0)
+      object.thrust(0.0000002)
+
+      objects[object.objectId].x = object.x;
+      objects[object.objectId].y = object.y;
+      objects[object.objectId].rotation = object.rotation;
     }
   });
+
+  // this.matter.world.on('collisionstart', collisionEvent)
 
   io.emit('objectUpdates', objects);
 
@@ -270,13 +309,18 @@ function update() {
   // io.emit('cookieObstacleUpdates', cookies, obstacles);
 }
 
+function collisionEvent(event) {
+  console.log(event)
+}
+
 // Logic to add a player object to the game, called in create()
 function addPlayer(self, playerInfo) {
+  console.log('playerInfo:', playerInfo)
   const player = self.matter.add.sprite(playerInfo.x, playerInfo.y, 'ant').setOrigin(0.5, 0.5);
   // player.setBody({
   //   type: 'rectangle',
-  //   width: 11,
-  //   height: 11
+  //   width: 50,
+  //   height: 50
   // });
   //* This value manipulates top speed - lower value = higher top speed
   player.setFrictionAir(0.4);
@@ -287,8 +331,11 @@ function addPlayer(self, playerInfo) {
   // player.setCollidesWith([ self.playerColliderGroup, self.cookieColliderGroup, self.obstacleColliderGroup ]);
   //! player.setCollideWorldBounds(true);
   //! player.onWorldBounds =true;
+  player.base = 'player'
   player.objectId = playerInfo.objectId;
+  // console.log('player object:', player)
   self.objects.add(player);
+  // console.log("self.objects:", self.objects)
 }
 
 function removeObject(self, objectId) {
@@ -300,9 +347,9 @@ function removeObject(self, objectId) {
 }
 
 function handlePlayerInput(self, playerId, input) {
-  console.log('handlePlayerInput called:', playerId, input)
+  // console.log('handlePlayerInput called:', playerId, input)
   self.objects.getChildren().forEach((player) => {
-    console.log('Socket ID match found')
+    // console.log('Socket ID match found')
     if (playerId === player.objectId) {
       objects[player.objectId].input = input;
     }
@@ -310,7 +357,9 @@ function handlePlayerInput(self, playerId, input) {
 }
 
 function addCookie(self, cookieInfo) {
-  const cookie = self.matter.add.sprite(cookieInfo.x, cookieInfo.y, cookieInfo.type).setOrigin(0.5, 0.5);
+  console.log('cookieInfo:', cookieInfo)
+  const cookie = self.matter.add.sprite(cookieInfo.x, cookieInfo.y, cookieInfo.detail).setOrigin(0.5, 0.5);
+  // const cookie = self.matter.add.sprite(cookieInfo.x, cookieInfo.y, 'ant').setOrigin(0.5, 0.5);
   // cookie.setBody({
   //   type: 'rectangle',
   //   width: 75,
@@ -321,18 +370,28 @@ function addCookie(self, cookieInfo) {
   // cookie.setCollisionCategory(self.cookieColliderGroup);
   // Set up collisions
   // cookie.setCollidesWith([ self.playerColliderGroup, self.cookieColliderGroup, self.obstacleColliderGroup ]);
+  cookie.base = 'cookie'
   cookie.objectId = cookieInfo.objectId;
   self.objects.add(cookie);
 }
 
 function addObstacle(self, obstacleInfo) {
-  const obstacle = self.matter.add.sprite(obstacleInfo.x, obstacleInfo.y, obstacleInfo.type).setOrigin(0.5, 0.5);
+  console.log('obstacleInfo:', obstacleInfo)
+  // const obstacle = self.matter.add.sprite(obstacleInfo.x, obstacleInfo.y, obstacleInfo.type).setOrigin(0.5, 0.5);
+  const obstacle = self.matter.add.sprite(obstacleInfo.x, obstacleInfo.y, obstacleInfo.detail);
+  obstacle.setBody({
+    type: 'rectangle',
+    width: 75,
+    height: 75
+  })
   obstacle.setFrictionAir(0.4);
   obstacle.setMass(obstacleInfo.mass);
   // obstacle.setCollisionCategory(self.obstacleColliderGroup);
   // Set up collisions
   // obstacle.setCollidesWith([ self.playerColliderGroup, self.cookieColliderGroup, self.obstacleColliderGroup ]);
+  obstacle.base = 'obstacle'
   obstacle.objectId = obstacleInfo.objectId;
+  console.log('obstacle object:', obstacle)
   self.objects.add(obstacle);
 }
 
@@ -342,6 +401,21 @@ function randomPosition(max) {
 
 function randomNumber(max) {
   return Math.floor(Math.random() * max);
+}
+
+function addTest(self, info) {
+  const test = self.matter.add.sprite(info.x, info.y, 'smlcookie')
+  // test.setBody({
+  //   type: 'rectangle',
+  //   width: 11,
+  //   height: 11
+  // })
+  test.setFrictionAir(0.4)
+  test.setMass(1)
+  test.base = 'test'
+  test.objectId = info.objectId
+  console.log('test object:', test)
+  self.objects.add(test)
 }
 
 const game = new Phaser.Game(config);

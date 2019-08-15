@@ -42,8 +42,10 @@ function create() {
     Object.keys(objects).forEach(function (id) {
       if (objects[id].objectId === self.socket.id) {
         displayObjects(self, objects[id], 'ant');
+      // } else if (objects[id].base === 'cookie') {
+        // displayObjects(self, objects[id], 'ant')
       } else {
-        displayObjects(self, objects[id], objects[id].type);
+        displayObjects(self, objects[id], objects[id].detail);
       }
     });
   });
@@ -51,14 +53,14 @@ function create() {
   // Handle currentCookies broadcast from server - update cookies list and display them correctly
   // this.socket.on('currentCookies', function (cookies) {
   //   Object.keys(cookies).forEach(function (id) {
-  //     displayCookies(self, cookies[id], cookies[id].type);
+  //     displayCookies(self, cookies[id], cookies[id].detail);
   //   });
   // });
 
   // Handle currentObstacles broadcast from server - update obstacles list and display them correctly
   // this.socket.on('currentObstacles', function (obstacles) {
   //   Object.keys(obstacles).forEach(function (id) {
-  //     displayObstacles(self, obstacles[id], obstacles[id].type);
+  //     displayObstacles(self, obstacles[id], obstacles[id].detail);
   //   });
   // });
 
@@ -157,12 +159,12 @@ function update() {
 
   // Check for changes between previous inputs and current ones, and if one is found, update the server
   if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed|| down !== this.downKeyPressed) {
-    console.log('Client called playerInput')
     this.socket.emit('playerInput', { left: this.leftKeyPressed, right: this.rightKeyPressed, up: this.upKeyPressed, down: this.downKeyPressed });
   }
 }
 
 function displayObjects(self, objectInfo, sprite) {
+  console.log('sprite:', sprite, objectInfo)
   const object = self.add.sprite(objectInfo.x, objectInfo.y, sprite).setOrigin(0.5, 0.5);
   if (objectInfo.team) {
     if (objectInfo.team === 'blue') {
