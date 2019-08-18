@@ -23,7 +23,7 @@ function preload() {
   this.load.image('lrgcookie', 'assets/150x150_Cookie.png');
   this.load.image('log', 'assets/50x185_Log.png');
   this.load.image('leaf', 'assets/350x150_Leaf.png');
-  this.load.image('ant', 'assets/Antz_Player.jpg');
+  this.load.image('Antz_Player', 'assets/Antz_Player.jpg');
 }
 
 function create() {
@@ -41,8 +41,8 @@ function create() {
   this.socket.on('currentObjects', function (objects) {
     Object.keys(objects).forEach(function (id) {
       if (objects[id].objectId === self.socket.id) {
-        displayObjects(self, objects[id], 'ant');
-      // } else if (objects[id].base === 'cookie') {
+        displayObjects(self, objects[id], 'Antz_Player');
+      // } else if (objects[id].label === 'cookie') {
         // displayObjects(self, objects[id], 'ant')
       } else {
         displayObjects(self, objects[id], objects[id].detail);
@@ -66,7 +66,7 @@ function create() {
 
   // Handle newPlayer broadcast from server - add new player to display
   this.socket.on('newPlayer', function (playerInfo) {
-    displayObjects(self, playerInfo, 'ant');
+    displayObjects(self, playerInfo, 'Antz_Player');
   })
 
   // Handle disconnect broadcast from server - remove players as they disconnect

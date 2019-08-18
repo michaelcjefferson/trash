@@ -1,0 +1,217 @@
+{
+	"generator_info": "Shape definitions generated with PhysicsEditor. Visit https://www.codeandweb.com/physicseditor",
+	"50x185_Log": {
+		"type": "fromPhysicsEditor",
+		"label": "50x185_Log",
+		"isStatic": false,
+		"density": 0.1,
+		"restitution": 0,
+		"friction": 0.1,
+		"frictionAir": 0.01,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"vertices": [
+					[ { "x":8, "y":184 }, { "x":23, "y":165 }, { "x":27, "y":20 }, { "x":0, "y":2 }, { "x":0, "y":184 } ],
+					[ { "x":44, "y":2 }, { "x":27, "y":20 }, { "x":23, "y":165 }, { "x":50, "y":184 }, { "x":50, "y":2 } ],
+					[ { "x":43, "y":184 }, { "x":50, "y":184 }, { "x":23, "y":165 } ],
+					[ { "x":7, "y":2 }, { "x":0, "y":2 }, { "x":27, "y":20 } ]
+				]
+			}
+		]
+	},
+	"20x20_Crumb": {
+		"type": "fromPhysicsEditor",
+		"label": "20x20_Crumb",
+		"isStatic": false,
+		"density": 0.10000000149011612,
+		"restitution": 0,
+		"friction": 0.10000000149011612,
+		"frictionAir": 0.009999999776482582,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"circle": {
+					"x": 9.999999999999998,
+					"y": 10,
+					"radius": 10
+				}
+			}
+		]
+	},
+	"50x50_Crumb": {
+		"type": "fromPhysicsEditor",
+		"label": "50x50_Crumb",
+		"isStatic": false,
+		"density": 0.10000000149011612,
+		"restitution": 0,
+		"friction": 0.10000000149011612,
+		"frictionAir": 0.009999999776482582,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"circle": {
+					"x": 25.000000000000004,
+					"y": 24.799999999999997,
+					"radius": 25
+				}
+			}
+		]
+	},
+	"smlcookie": {
+		"type": "fromPhysicsEditor",
+		"label": "smlcookie",
+		"isStatic": false,
+		"density": 0.10000000149011612,
+		"restitution": 0,
+		"friction": 0.10000000149011612,
+		"frictionAir": 0.009999999776482582,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"circle": {
+					"x": 37.368421052631575,
+					"y": 37.36842105263158,
+					"radius": 37.35044971861551
+				}
+			}
+		]
+	},
+	"90x150_HalfCookie": {
+		"type": "fromPhysicsEditor",
+		"label": "90x150_HalfCookie",
+		"isStatic": false,
+		"density": 0.10000000149011612,
+		"restitution": 0,
+		"friction": 0.10000000149011612,
+		"frictionAir": 0.009999999776482582,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"vertices": [
+					[ { "x":1, "y":6 }, { "x":4, "y":14 }, { "x":31, "y":58 }, { "x":88, "y":98 }, { "x":68, "y":25 }, { "x":53, "y":14 }, { "x":30, "y":5 }, { "x":9, "y":3 } ],
+					[ { "x":2, "y":96 }, { "x":43, "y":150 }, { "x":69, "y":133 }, { "x":88, "y":98 }, { "x":31, "y":58 } ],
+					[ { "x":83, "y":49 }, { "x":68, "y":25 }, { "x":88, "y":98 }, { "x":89, "y":81 }, { "x":87, "y":63 } ]
+				]
+			}
+		]
+	},
+	"150x150_Cookie": {
+		"type": "fromPhysicsEditor",
+		"label": "150x150_Cookie",
+		"isStatic": false,
+		"density": 0.10000000149011612,
+		"restitution": 0,
+		"friction": 0.10000000149011612,
+		"frictionAir": 0.009999999776482582,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"circle": {
+					"x": 75.5041628122109,
+					"y": 74.86586493987049,
+					"radius": 75
+				}
+			}
+		]
+	},
+	"350x150_Leaf": {
+		"type": "fromPhysicsEditor",
+		"label": "350x150_Leaf",
+		"isStatic": false,
+		"density": 0.10000000149011612,
+		"restitution": 0,
+		"friction": 0.10000000149011612,
+		"frictionAir": 0.009999999776482582,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"vertices": [
+					[ { "x":340, "y":144 }, { "x":345, "y":137 }, { "x":349, "y":128 }, { "x":345, "y":115 }, { "x":316.9565124511719, "y":98.26086807250977 }, { "x":328, "y":126 } ],
+					[ { "x":328, "y":126 }, { "x":316.9565124511719, "y":98.26086807250977 }, { "x":315, "y":117 } ],
+					[ { "x":315, "y":117 }, { "x":316.9565124511719, "y":98.26086807250977 }, { "x":292, "y":86 }, { "x":301, "y":108 } ],
+					[ { "x":301, "y":108 }, { "x":292, "y":86 }, { "x":288, "y":103 } ],
+					[ { "x":292, "y":86 }, { "x":284, "y":66 }, { "x":258, "y":38 }, { "x":228, "y":16 }, { "x":189, "y":1 }, { "x":212, "y":147 }, { "x":262, "y":127 }, { "x":288, "y":103 } ],
+					[ { "x":1, "y":21 }, { "x":33, "y":61 }, { "x":12, "y":25 } ],
+					[ { "x":12, "y":25 }, { "x":33, "y":61 }, { "x":27, "y":27 } ],
+					[ { "x":27, "y":27 }, { "x":33, "y":61 }, { "x":76, "y":102 }, { "x":68, "y":25 } ],
+					[ { "x":68, "y":25 }, { "x":76, "y":102 }, { "x":107, "y":125 }, { "x":141, "y":142 }, { "x":173, "y":149 }, { "x":189, "y":1 }, { "x":171, "y":0 }, { "x":151, "y":1 } ],
+					[ { "x":212, "y":147 }, { "x":189, "y":1 }, { "x":173, "y":149 }, { "x":192, "y":150 } ]
+				]
+			}
+		]
+	},
+	"Antz_Player": {
+		"type": "fromPhysicsEditor",
+		"label": "Antz_Player",
+		"isStatic": false,
+		"density": 0.10000000149011612,
+		"restitution": 0,
+		"friction": 0.10000000149011612,
+		"frictionAir": 0.009999999776482582,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"vertices": [
+					[ { "x":0, "y":0 }, { "x":0, "y":10 }, { "x":10, "y":10 }, { "x":10, "y":0 } ]
+				]
+			}
+		]
+	}
+}

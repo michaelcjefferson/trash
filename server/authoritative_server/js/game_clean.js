@@ -1,5 +1,13 @@
 const objects = {};
 
+let totalPlayers = {
+  total: 0,
+  blue: 0,
+  red: 0
+}
+let totalCookies = 0
+let totalObstacles = 0
+
 const cookieProps = {
   smlcrumb: {
     detail: 'smlcrumb',
@@ -72,53 +80,47 @@ function preload() {
   this.load.image('lrgcookie', 'assets/150x150_Cookie.png');
   this.load.image('log', 'assets/50x185_Log.png');
   this.load.image('leaf', 'assets/350x150_Leaf.png');
-  this.load.image('ant', 'assets/Antz_Player.jpg');
+  this.load.image('Antz_Player', 'assets/Antz_Player.jpg');
+
+  this.load.json('shapes', 'assets/GameObject_Collisions.json')
 }
 
 function create() {
+  const shapes = this.cache.json.get('shapes')
+  
   const self = this;
 
   this.objects = this.add.group();
 
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height);
 
-  let startingObstacles = {
-    quantity: 1,
-    xPositions: [500],
-    yPositions: [300]
+  objects['a0s8dgnasndg0'] = {
+    label: 'obstacle',
+    detail: 'log',
+    rotation: Math.floor(Math.random() * 360),
+    x: Math.floor(Math.random() * 700) + 50,
+    y: Math.floor(Math.random() * 500) + 50,
+    originx: 0.5,
+    originy: 0.5,
+    objectId: 'a0s8dgnasndg0'
   }
-
-  for (const i of Array(startingObstacles.quantity).keys()) {
-    let id = 'o1';
-    while (objects[id]) {
-      id = 'o' + randomNumber(10000);
-    }
-    objects[id] = {
-      base: 'obstacle',
-      detail: Object.keys(obstacleProps)[Math.floor(Object.keys(obstacleProps).length * Math.random())],
-      objectId: id,
-      rotation: 0,
-      x: startingObstacles.xPositions[i],
-      y: startingObstacles.yPositions[i]
-    };
-    addObstacle(self, objects[id]);
-  }
+  addObject(self, objects['a0s8dgnasndg0'], shapes)
 
   objects['antTest'] = {
-    base: 'test',
+    label: 'test',
     detail: 'smlcookie',
     rotation: 0,
     x: Math.floor(Math.random() * 700) + 50,
     y: Math.floor(Math.random() * 500) + 50,
     objectId: 'antTest'
-  };
-  addTest(self, objects['antTest'])
+  }
+  addTest(self, objects['antTest'], shapes)
 
   io.on('connection', function (socket) {
     console.log('Somebody connected.')
     objects[socket.id] = {
-      base: 'player',
-      detail: 'ant',
+      label: 'player',
+      detail: 'Antz_Player',
       rotation: 0,
       x: Math.floor(Math.random() * 700) + 50,
       y: Math.floor(Math.random() * 500) + 50,
@@ -132,13 +134,18 @@ function create() {
       }
     };
 
-    addPlayer(self, objects[socket.id]);
+    totalPlayers.total += 1
+    objects[socket.id].team === 'red' ? totalPlayers.red += 1 : totalPlayers.blue += 1
+
+    addPlayer(self, objects[socket.id], shapes);
 
     socket.emit('currentObjects', objects);
     socket.broadcast.emit('newPlayer', objects[socket.id]);
 
     socket.on('disconnect', function () {
       console.log('Somebody disconnected.')
+      totalPlayers.total -= 1
+      objects[socket.id].team === 'red' ? totalPlayers.red -= 1 : totalPlayers.blue -= 1
       removeObject(self, socket.id);
       delete objects[socket.id];
       io.emit('disconnect', socket.id);
@@ -152,7 +159,7 @@ function create() {
 
 function update() {
   this.objects.getChildren().forEach((object) => {
-    if (object.base === 'player') {
+    if (object.label === 'player') {
       const input = objects[object.objectId].input;
 
       if (input.left) {
@@ -192,13 +199,36 @@ function collisionEvent(event) {
   console.log(event)
 }
 
-function addPlayer(self, playerInfo) {
-  const player = self.matter.add.sprite(playerInfo.x, playerInfo.y, 'ant').setOrigin(0.5, 0.5);
+function addObject(self, info) {
+  info.label === 'cookie' ? totalCookies += 1 : totalObstacles += 1
+  const object = self.matter.add.sprite(info.x, info.y, info.detail).setOrigin(info.originx, info.originy);
+  // object.setFrictionAir(info.frictionAir)
+  // object.setMass(info.mass)
+  object.label = info.label
+  object.objectId = info.objectId
+  self.objects.add(object)
+}
+
+function addPlayer(self, playerInfo, shapes) {
+  const player = self.matter.add.sprite(playerInfo.x, playerInfo.y, 'Antz_Player', {shape: shapes.Antz_Player}).setOrigin(0.5, 0.5);
+  //* This value manipulates top speed - lower value = higher top speed
   player.setFrictionAir(0.4);
+  //* This value manipulates acceleration - lower value = higher acceleration
   player.setMass(1)
-  player.base = 'player'
+  player.label = 'player'
   player.objectId = playerInfo.objectId;
   self.objects.add(player);
+}
+
+function addTest(self, info, shapes) {
+  const test = self.matter.add.sprite(info.x, info.y, 'smlcookie')
+  test.setCircle()
+  test.setFrictionAir(0.4)
+  test.setMass(1)
+  test.label = 'test'
+  test.objectId = info.objectId
+  self.objects.add(test)
+  console.log(test)
 }
 
 function removeObject(self, objectId) {
@@ -217,20 +247,11 @@ function handlePlayerInput(self, playerId, input) {
   });
 }
 
-function addCookie(self, cookieInfo) {
-  const cookie = self.matter.add.sprite(cookieInfo.x, cookieInfo.y, cookieInfo.detail).setOrigin(0.5, 0.5);
-  cookie.setFrictionAir(0.4);
-  cookie.setMass(cookieInfo.mass);
-  cookie.base = 'cookie'
-  cookie.objectId = cookieInfo.objectId;
-  self.objects.add(cookie);
-}
-
 function addObstacle(self, obstacleInfo) {
   const obstacle = self.matter.add.sprite(obstacleInfo.x, obstacleInfo.y, obstacleInfo.detail);
   obstacle.setFrictionAir(0.4);
   obstacle.setMass(obstacleInfo.mass);
-  obstacle.base = 'obstacle'
+  obstacle.label = 'obstacle'
   obstacle.objectId = obstacleInfo.objectId;
   self.objects.add(obstacle);
 }
@@ -241,15 +262,6 @@ function randomPosition(max) {
 
 function randomNumber(max) {
   return Math.floor(Math.random() * max);
-}
-
-function addTest(self, info) {
-  const test = self.matter.add.sprite(info.x, info.y, 'smlcookie')
-  test.setFrictionAir(0.4)
-  test.setMass(1)
-  test.base = 'test'
-  test.objectId = info.objectId
-  self.objects.add(test)
 }
 
 const game = new Phaser.Game(config);
