@@ -23,7 +23,7 @@ function preload() {
   this.load.image('lrgcookie', 'assets/150x150_Cookie.png');
   this.load.image('log', 'assets/50x185_Log.png');
   this.load.image('leaf', 'assets/350x150_Leaf.png');
-  this.load.image('Antz_Player', 'assets/Antz_Player.jpg');
+  this.load.image('ant', 'assets/Antz_Player.jpg');
 }
 
 function create() {
@@ -41,11 +41,11 @@ function create() {
   this.socket.on('currentObjects', function (objects) {
     Object.keys(objects).forEach(function (id) {
       if (objects[id].objectId === self.socket.id) {
-        displayObjects(self, objects[id], 'Antz_Player');
-      // } else if (objects[id].label === 'cookie') {
+        displayObjects(self, objects[id], 'ant');
+      // } else if (objects[id].type === 'cookie') {
         // displayObjects(self, objects[id], 'ant')
       } else {
-        displayObjects(self, objects[id], objects[id].detail);
+        displayObjects(self, objects[id], objects[id].label);
       }
     });
   });
@@ -53,20 +53,20 @@ function create() {
   // Handle currentCookies broadcast from server - update cookies list and display them correctly
   // this.socket.on('currentCookies', function (cookies) {
   //   Object.keys(cookies).forEach(function (id) {
-  //     displayCookies(self, cookies[id], cookies[id].detail);
+  //     displayCookies(self, cookies[id], cookies[id].label);
   //   });
   // });
 
   // Handle currentObstacles broadcast from server - update obstacles list and display them correctly
   // this.socket.on('currentObstacles', function (obstacles) {
   //   Object.keys(obstacles).forEach(function (id) {
-  //     displayObstacles(self, obstacles[id], obstacles[id].detail);
+  //     displayObstacles(self, obstacles[id], obstacles[id].label);
   //   });
   // });
 
   // Handle newPlayer broadcast from server - add new player to display
   this.socket.on('newPlayer', function (playerInfo) {
-    displayObjects(self, playerInfo, 'Antz_Player');
+    displayObjects(self, playerInfo, 'ant');
   })
 
   // Handle disconnect broadcast from server - remove players as they disconnect
@@ -83,7 +83,7 @@ function create() {
     Object.keys(objects).forEach(function (id) {
       self.objects.getChildren().forEach(function (object) {
         if (objects[id].objectId === object.objectId) {
-          object.setRotation(objects[id].rotation);
+          object.setAngle(objects[id].angle);
           object.setPosition(objects[id].x, objects[id].y);
         }
       });
@@ -95,7 +95,7 @@ function create() {
   //   Object.keys(cookies).forEach(function (id) {
   //     self.cookies.getChildren().forEach(function (cookie) {
   //       if (cookies[id].cookieId === cookie.cookieId) {
-  //         cookie.setRotation(cookies[id].rotation);
+  //         cookie.setangle(cookies[id].angle);
   //         cookie.setPosition(cookies[id].x, cookies[id].y);
   //       }
   //     });
@@ -103,7 +103,7 @@ function create() {
   //   Object.keys(obstacles).forEach(function (id) {
   //     self.obstacles.getChildren().forEach(function (obstacle) {
   //       if (obstacles[id].obstacleId === obstacle.obstacleId) {
-  //         obstacle.setRotation(obstacles[id].rotation);
+  //         obstacle.setangle(obstacles[id].angle);
   //         obstacle.setPosition(obstacles[id].x, obstacles[id].y);
   //       }
   //     });
