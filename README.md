@@ -39,3 +39,4 @@ To view/use controller mode, go to localhost:3000/controller.
 - Incorporate more complex physics - applyForce on collision (and perhaps to move the player), add friction and static properties to leaves so that they act as a slower rather than a blocker
 - Add goal and point system, and work the points so that there is a snitch crumb worth 500 and a bunch of quaffle crumbs worth less
 - Decide whether it is better to customise levels and display in order/randomly, or randomly generate levels, or have an option for both. Customised levels eliminates possibility of object overlap on spawn (except for players, unless they spawn behind goal area or something)
+- Design controller page - need to make sure buttons can't be selected etc, and look pretty

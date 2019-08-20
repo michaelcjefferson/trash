@@ -95,8 +95,7 @@ function create() {
       input: {
         left: false,
         right: false,
-		    up: false,
-		    down: false,
+		    up: false
       }
     }
 
@@ -118,6 +117,7 @@ function create() {
     })
 
     socket.on('playerInput', function (inputData) {
+      console.log('playerInput called:', inputData)
       handlePlayerInput(self, socket.id, inputData)
     })
   })
@@ -227,8 +227,8 @@ function addVertTest(self, info) {
   test.type = 'cookie'
   test.objectId = info.objectId
   self.objects.add(test)
-  console.log(test.vertices)
-  console.log(test)
+  // console.log(test.vertices)
+  // console.log(test)
 }
 
 function removeObject(self, objectId) {

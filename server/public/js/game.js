@@ -30,8 +30,6 @@ function create() {
   const self = this;
   this.socket = io();
   this.objects = this.add.group();
-  // this.cookies = this.add.group();
-  // this.obstacles = this.add.group();
 
 
   // this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
@@ -42,27 +40,11 @@ function create() {
     Object.keys(objects).forEach(function (id) {
       if (objects[id].objectId === self.socket.id) {
         displayObjects(self, objects[id], 'ant');
-      // } else if (objects[id].type === 'cookie') {
-        // displayObjects(self, objects[id], 'ant')
       } else {
         displayObjects(self, objects[id], objects[id].label);
       }
     });
   });
-
-  // Handle currentCookies broadcast from server - update cookies list and display them correctly
-  // this.socket.on('currentCookies', function (cookies) {
-  //   Object.keys(cookies).forEach(function (id) {
-  //     displayCookies(self, cookies[id], cookies[id].label);
-  //   });
-  // });
-
-  // Handle currentObstacles broadcast from server - update obstacles list and display them correctly
-  // this.socket.on('currentObstacles', function (obstacles) {
-  //   Object.keys(obstacles).forEach(function (id) {
-  //     displayObstacles(self, obstacles[id], obstacles[id].label);
-  //   });
-  // });
 
   // Handle newPlayer broadcast from server - add new player to display
   this.socket.on('newPlayer', function (playerInfo) {
@@ -90,26 +72,6 @@ function create() {
     });
   });
 
-  // Handle movements of cookies and obstacles
-  // this.socket.on('cookieObstacleUpdates', function (cookies, obstacles) {
-  //   Object.keys(cookies).forEach(function (id) {
-  //     self.cookies.getChildren().forEach(function (cookie) {
-  //       if (cookies[id].cookieId === cookie.cookieId) {
-  //         cookie.setangle(cookies[id].angle);
-  //         cookie.setPosition(cookies[id].x, cookies[id].y);
-  //       }
-  //     });
-  //   });
-  //   Object.keys(obstacles).forEach(function (id) {
-  //     self.obstacles.getChildren().forEach(function (obstacle) {
-  //       if (obstacles[id].obstacleId === obstacle.obstacleId) {
-  //         obstacle.setangle(obstacles[id].angle);
-  //         obstacle.setPosition(obstacles[id].x, obstacles[id].y);
-  //       }
-  //     });
-  //   });
-  // });
-
   // Handle score and star updates
   // this.socket.on('updateScore', function (scores) {
   //   self.blueScoreText.setText('Blue: ' + scores.blue);
@@ -129,14 +91,12 @@ function create() {
   this.leftKeyPressed = false;
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
-  this.downKeyPressed = false;
 }
 
 function update() {
   const left = this.leftKeyPressed;
   const right = this.rightKeyPressed;
   const up = this.upKeyPressed;
-  const down = this.downKeyPressed;
 
   if (this.cursors.left.isDown) {
     this.leftKeyPressed = true;
@@ -149,17 +109,13 @@ function update() {
 
   if (this.cursors.up.isDown) {
     this.upKeyPressed = true;
-  } else if (this.cursors.down.isDown) {
-    this.downKeyPressed = true;
-  } else
-    {
+  } else {
     this.upKeyPressed = false;
-    this.downKeyPressed = false;
-    }
+  }
 
   // Check for changes between previous inputs and current ones, and if one is found, update the server
-  if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed|| down !== this.downKeyPressed) {
-    this.socket.emit('playerInput', { left: this.leftKeyPressed, right: this.rightKeyPressed, up: this.upKeyPressed, down: this.downKeyPressed });
+  if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
+    this.socket.emit('playerInput', { left: this.leftKeyPressed, right: this.rightKeyPressed, up: this.upKeyPressed });
   }
 }
 
@@ -176,15 +132,3 @@ function displayObjects(self, objectInfo, sprite) {
   object.objectId = objectInfo.objectId;
   self.objects.add(object);
 }
-
-// function displayCookies(self, cookieInfo, sprite) {
-//   const cookie = self.add.sprite(cookieInfo.x, cookieInfo.y, sprite).setOrigin(0.5, 0.5);
-//   cookie.cookieId = cookieInfo.cookieId;
-//   self.cookies.add(cookie);
-// }
-
-// function displayObstacles(self, obstacleInfo, sprite) {
-//   const obstacle = self.add.sprite(obstacleInfo.x, obstacleInfo.y, sprite).setOrigin(0.5, 0.5);
-//   obstacle.obstacleId = obstacleInfo.obstacleId;
-//   self.obstacles.add(obstacle);
-// }

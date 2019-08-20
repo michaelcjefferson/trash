@@ -19,8 +19,50 @@
         background-color: black;
         color: wheat;
       }
+      #controller-box {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+      }
+      #up-box {
+        height: 50%;
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #leftright-box {
+        height: 50%;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .button {
+        width: 8rem;
+        height: 8rem;
+        border-radius: 100%;
+        margin: 1rem;
+        background-color: paleturquoise;
+        color: darkblue;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     </style>
     <h1>ANTS</h1>
-    <script type="module" src="controller.js"></script>
+    <div id="controller-box">
+      <div id="up-box">
+        <div class="button" id="forward-button">FORWARD</div>
+      </div>
+      <div id="leftright-box">
+        <div class="button" id="left-button">LEFT</div>
+        <div class="button" id="right-button">RIGHT</div>
+      </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="js/controller.js"></script>
   </body>
 </html>
