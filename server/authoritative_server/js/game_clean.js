@@ -72,8 +72,15 @@ function create() {
     objectId: 'antTest'
   }
   addTest(self, objects['antTest'], objectProps.cookies.smlcookie)
-
-
+  
+  objects['vertTest'] = {
+    type: 'cookie',
+    label: 'halfcookie',
+    x: 675,
+    y: 125,
+    objectId: 'vertTest'
+  }
+  addVertTest(self, objects['vertTest'])
 
   io.on('connection', function (socket) {
     console.log('Somebody connected.')
@@ -159,12 +166,19 @@ function collisionEvent(event) {
 function addObject(self, info, props) {
   // TODO: Need to register nothing for players
   info.type === 'cookie' ? totalCookies += 1 : totalObstacles += 1
-  const object = self.matter.add.sprite(info.x, info.y, props.label, {vertices: props.vertices}).setOrigin(0.5, 0.5)
+  const object = self.matter.add.sprite(info.x, info.y, props.label).setOrigin(0.5, 0.5)
   if (props.isCircle) {
     object.setCircle()
   }
+  // console.log(props.hasVertices)
+  // console.log(props.vertices)
   // if (props.hasVertices) {
-  //   object.setVertices(props.vertices)
+  //   object.setBody({
+  //     type: 'fromVertices',
+  //     verts: props.vertices,
+  //     x: info.x,
+  //     y: info.y
+  //   })
   // }
   object.setFrictionAir(props.frictionAir)
   object.setMass(props.mass)
@@ -172,7 +186,8 @@ function addObject(self, info, props) {
   object.type = props.type
   object.objectId = info.objectId
   self.objects.add(object)
-  console.log(object.vertices)
+  // console.log(object)
+  // console.log(object.vertices)
 }
 
 function addPlayer(self, playerInfo) {
@@ -198,6 +213,22 @@ function addTest(self, info, props) {
   test.type = props.type
   test.objectId = info.objectId
   self.objects.add(test)
+}
+
+// setBody works, but only with one set of vertices - at the moment, the objects with verts are set up as composites, so they have several sets of verts, which doesn't work with this method
+function addVertTest(self, info) {
+  const test = self.matter.add.sprite(675, 125, 'halfcookie')
+  test.setBody({
+    type: 'fromVertices',
+    verts: [ { "x":1, "y":6 }, { "x":4, "y":14 }, { "x":31, "y":58 }, { "x":88, "y":98 }, { "x":68, "y":25 }, { "x":53, "y":14 }, { "x":30, "y":5 }, { "x":9, "y":3 } ],
+    x: 675,
+    y: 125
+  })
+  test.type = 'cookie'
+  test.objectId = info.objectId
+  self.objects.add(test)
+  console.log(test.vertices)
+  console.log(test)
 }
 
 function removeObject(self, objectId) {

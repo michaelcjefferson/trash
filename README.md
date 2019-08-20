@@ -1,5 +1,6 @@
 # Ants.io
 ### A game about being an ant
+# IMPORTANT - Navigate to the /trash directory and run 'npm install' again
 ## Setup
 Make sure that [Node version 10.16.2](https://nodejs.org/en/download/) is installed on your computer. Once it's installed, check that it is working correctly by opening a terminal and running:
 `node --version`.
@@ -17,6 +18,10 @@ To get realtime console.logs and other information about the Node server, naviga
 
 There are currently two .js files on the server side - one with comments and all test code, and one clean version which can be quickly read and manipulated. To choose which one should be served, go to authoritative_server/index.html, and change the link in the `<script>` file from one to the other.
 
+## App Navigation
+To view spectator mode, go to localhost:3000/spectate.
+To view/use controller mode, go to localhost:3000/controller.
+
 ## Tutorial Sources
 [Multiplayer with Phaser 3](https://phasertutorials.com/creating-a-simple-multiplayer-game-in-phaser-3-with-an-authoritative-server-part-1/)
 
@@ -25,6 +30,8 @@ There are currently two .js files on the server side - one with comments and all
 [Mario-style platformer in Phaser 3](https://gamedevacademy.org/how-to-make-a-mario-style-platformer-with-phaser-3/?a=13)
 
 [Multiplayer with Matter JS physics in Phaser 3](https://github.com/yandeu/phaser3-multiplayer-with-physics)
+
+[Using Illustrator to get object vertices from SVGs](https://codersblock.com/blog/javascript-physics-with-matter-js/) (Go to the section with the title 'Complex Shapes')
 
 ## TODO
 - Controls need reworking - holding right then left then releasing right leads to the player still rotating right even though left is held down

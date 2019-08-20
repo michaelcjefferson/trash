@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const helmet = require('helmet');
 const path = require('path');
 const jsdom = require('jsdom');
 const Datauri = require('datauri');
@@ -20,10 +21,21 @@ const { JSDOM } = jsdom;
 const PORT = 3000;
 const HOST = '0.0.0.0';
 
+// Use helmet to automatically tighten up security a little. Can be used to set up CSPs - look up docs if so desired
+app.use(helmet());
+
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/contoller.html')
+});
+
+app.get('/spectate', (req, res) => {
   res.sendFile(__dirname + '/public/index.html')
+});
+
+app.get('/controller', (req, res) => {
+  res.sendFile(__dirname + '/public/controller.html')
 });
 
 function setupAuthoritativePhaser() {

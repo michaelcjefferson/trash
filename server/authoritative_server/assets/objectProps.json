@@ -32,6 +32,7 @@
       "url": "assets/75x75_Cookie.png",
       "mass": 500,
       "isCircle": true,
+      "hasVertices": false,
       "frictionAir": 0.99
     },
     "halfcookie": {
