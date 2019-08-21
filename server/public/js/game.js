@@ -2,8 +2,8 @@ const config = {
   // Will automatically default to display mode i.e. render graphics
   type: Phaser.AUTO,
   parent: 'antz-io',
-  width: 800,
-  height: 600,
+  width: 1920,
+  height: 1080,
   backgroundColor: '#EFDFD0',
   scene: {
     preload: preload,
@@ -24,6 +24,8 @@ function preload() {
   this.load.image('log', 'assets/50x185_Log.png');
   this.load.image('leaf', 'assets/350x150_Leaf.png');
   this.load.image('ant', 'assets/Antz_Player.jpg');
+  this.load.image('redgoal', 'assets/350x250_RedTeamGoal.png');
+  this.load.image('bluegoal', 'assets/350x250_BlueTeamGoal.png');
 }
 
 function create() {
@@ -31,9 +33,11 @@ function create() {
   this.socket = io();
   this.objects = this.add.group();
 
+  this.blueGoal = this.add.sprite(275, 540, 'bluegoal').setOrigin(0.5, 0.5);
+  this.redGoal = this.add.sprite(1645, 540, 'redgoal').setOrigin(0.5, 0.5);
 
-  // this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
-  // this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
+  this.blueScoreText = this.add.text(16, 16, '0', { fontSize: '72px', fill: '#0000FF' });
+  this.redScoreText = this.add.text(1904, 16, '0', { fontSize: '72px', fill: '#FF0000' }).setOrigin(1, 0);
 
   // Handle currentPlayers broadcast from server - update players list and display them correctly
   this.socket.on('currentObjects', function (objects) {
@@ -74,8 +78,8 @@ function create() {
 
   // Handle score and star updates
   // this.socket.on('updateScore', function (scores) {
-  //   self.blueScoreText.setText('Blue: ' + scores.blue);
-  //   self.redScoreText.setText('Red: ' + scores.red);
+  //   self.blueScoreText.setText(scores.blue);
+  //   self.redScoreText.setText(scores.red);
   // });
 
   // this.socket.on('starLocation', function (starLocation) {
@@ -120,7 +124,6 @@ function update() {
 }
 
 function displayObjects(self, objectInfo, sprite) {
-  console.log('sprite:', sprite, objectInfo)
   const object = self.add.sprite(objectInfo.x, objectInfo.y, sprite).setOrigin(0.5, 0.5);
   if (objectInfo.team) {
     if (objectInfo.team === 'blue') {

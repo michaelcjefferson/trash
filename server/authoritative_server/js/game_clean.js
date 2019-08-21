@@ -11,8 +11,8 @@ let totalObstacles = 0
 const config = {
   type: Phaser.HEADLESS,
   parent: 'antz-io',
-  width: 800,
-  height: 600,
+  width: 1920,
+  height: 1080,
   physics: {
     default: 'matter',
     matter: {
@@ -40,6 +40,8 @@ function preload() {
   this.load.image('log', 'assets/50x185_Log.png')
   this.load.image('leaf', 'assets/350x150_Leaf.png')
   this.load.image('ant', 'assets/Antz_Player.jpg')
+  this.load.image('redgoal', 'assets/350x250_RedTeamGoal.png')
+  this.load.image('bluegoal', 'assets/350x250_BlueTeamGoal.png')
 
   this.load.json('objectProps', 'assets/objectProps.json')
 }
@@ -52,6 +54,13 @@ function create() {
   this.objects = this.add.group()
 
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height)
+
+  this.bluegoal = this.matter.add.rectangle(275, 540, 250, 150, {
+    isStatic: true
+  })
+  this.redgoal = this.matter.add.rectangle(1645, 540, 250, 150, {
+    isStatic: true
+  })
 
   objects['a0s8dgnasndg0'] = {
     type: objectProps.cookies.halfcookie.type,
@@ -117,7 +126,6 @@ function create() {
     })
 
     socket.on('playerInput', function (inputData) {
-      console.log('playerInput called:', inputData)
       handlePlayerInput(self, socket.id, inputData)
     })
   })

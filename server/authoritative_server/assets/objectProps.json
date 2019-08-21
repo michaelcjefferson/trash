@@ -75,5 +75,25 @@
       "isCircle": false,
       "frictionAir": 0.4
     }
+  },
+  "goals": {
+    "redgoal": {
+      "label": "redgoal",
+      "type": "goal",
+      "url": "assets/350x250_RedTeamGoal.png",
+      "mass": 1,
+      "isCircle": false,
+      "frictionAir": 0.4,
+      "isStatic": true
+    },
+    "bluegoal": {
+      "label": "bluegoal",
+      "type": "goal",
+      "url": "assets/350x250_BlueTeamGoal.png",
+      "mass": 1,
+      "isCircle": false,
+      "frictionAir": 0.4,
+      "isStatic": true
+    }
   }
 }
