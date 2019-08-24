@@ -44,23 +44,62 @@ function preload() {
   this.load.image('bluegoal', 'assets/350x250_BlueTeamGoal.png')
 
   this.load.json('objectProps', 'assets/objectProps.json')
+  this.load.json('levels', 'assets/levels.json')
 }
 
 function create() {
   const objectProps = this.cache.json.get('objectProps')
+  const levels = this.cache.json.get('levels')
   
   const self = this
 
+  // TODO: Check team of cookie and compare it to goal, only add points if they're opposites
+  this.collisionEvent = function (event) {
+    event.pairs.forEach((pair) => {
+      const { bodyA, bodyB } = pair
+  
+      if (bodyA.type === 'goal' && bodyB.gameObject && bodyB.gameObject.type === 'cookie') {
+        const id = bodyB.gameObject.objectId
+        removeObject(self, id)
+        delete objects[id]
+        self.scores[bodyA.team] += 1
+        io.emit('destroyobject', id)
+        io.emit('updateScore', self.scores)
+      } else if (bodyB.type === 'goal' && bodyA.gameObject && bodyA.gameObject.type === 'cookie') {
+        const id = bodyA.gameObject.objectId
+        removeObject(self, id)
+        delete objects[id]
+        self.scores[bodyB.team] += 1
+        io.emit('destroyobject', id)
+        io.emit('updateScore', self.scores)
+      }
+    })
+  }
+
   this.objects = this.add.group()
+
+  // Set up score tracker
+  this.scores = {
+    blue: 0,
+    red: 0
+  }
 
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height)
 
-  this.bluegoal = this.matter.add.rectangle(275, 540, 250, 150, {
-    isStatic: true
+  this.bluegoal = this.matter.add.rectangle(275, 540, 350, 250, {
+    isStatic: true,
+    isSensor: true
   })
+  this.bluegoal.label = 'bluegoal'
+  this.bluegoal.type = 'goal'
+  this.bluegoal.team = 'blue'
   this.redgoal = this.matter.add.rectangle(1645, 540, 250, 150, {
-    isStatic: true
+    isStatic: true,
+    isSensor: true
   })
+  this.redgoal.label = 'redgoal'
+  this.redgoal.type = 'goal'
+  this.redgoal.team = 'red'
 
   objects['a0s8dgnasndg0'] = {
     type: objectProps.cookies.smlcookie.type,
@@ -72,24 +111,23 @@ function create() {
   }
   addObject(self, objects['a0s8dgnasndg0'], objectProps.cookies.smlcookie)
 
-  // objects['antTest'] = {
-  //   type: objectProps.cookies.smlcookie.type,
-  //   label: objectProps.cookies.smlcookie.label,
-  //   angle: Math.floor(Math.random() * 360),
-  //   x: Math.floor(Math.random() * 700) + 50,
-  //   y: Math.floor(Math.random() * 500) + 50,
-  //   objectId: 'antTest'
-  // }
-  // addTest(self, objects['antTest'], objectProps.cookies.smlcookie)
-  
-  // objects['vertTest'] = {
-  //   type: 'cookie',
-  //   label: 'halfcookie',
-  //   x: 675,
-  //   y: 125,
-  //   objectId: 'vertTest'
-  // }
-  // addVertTest(self, objects['vertTest'])
+  this.setup = function (levelType) {
+    levels[levelType].cookies.forEach((cookie) => {
+      objectId = createId()
+      objects[objectId] = {
+        type: 'cookie',
+        label: cookie.label,
+        angle: cookie.angle || Math.floor(Math.random() * 360),
+        x: cookie.x,
+        y: cookie.y,
+        team: cookie.team || undefined,
+        objectId: objectId
+      }
+      addObject(self, objects[objectId], objectProps.cookies[cookie.label])
+    })
+  }
+
+  this.setup('basic')
 
   io.on('connection', function (socket) {
     console.log('Somebody connected.')
@@ -122,7 +160,7 @@ function create() {
       objects[socket.id].team === 'red' ? totalPlayers.red -= 1 : totalPlayers.blue -= 1
       removeObject(self, socket.id)
       delete objects[socket.id]
-      io.emit('disconnect', socket.id)
+      io.emit('destroyobject', socket.id)
     })
 
     socket.on('playerInput', function (inputData) {
@@ -150,15 +188,6 @@ function update() {
         object.thrust(0)
       }
 
-      // if (input.up) {
-      //   Phaser.Physics.Matter.Matter.Body.applyForce(object.body, {x: object.x, y: object.y}, {
-      //     x: Math.cos(object.angle) * .010,
-      //     y: Math.sin(object.angle) * .010
-      //   })
-      // } else {
-      //   Phaser.Physics.Matter.Matter.Body.applyForce(object.body, {x:0,y:0}, {x:0,y:0})
-      // }
-
       objects[object.objectId].x = object.x
       objects[object.objectId].y = object.y
       objects[object.objectId].angle = object.angle
@@ -171,13 +200,9 @@ function update() {
     }
   })
 
-  // this.matter.world.on('collisionstart', collisionEvent)
+  this.matter.world.on('collisionstart', this.collisionEvent)
 
   io.emit('objectUpdates', objects)
-}
-
-function collisionEvent(event) {
-  console.log(event)
 }
 
 function addObject(self, info, props) {
@@ -203,6 +228,7 @@ function addObject(self, info, props) {
   object.setMass(props.mass)
   object.setAngle(info.angle)
   object.type = props.type
+  object.label = props.label
   object.objectId = info.objectId
   self.objects.add(object)
   // console.log(object)
@@ -221,35 +247,6 @@ function addPlayer(self, playerInfo) {
   self.objects.add(player)
 }
 
-function addTest(self, info, props) {
-  const test = self.matter.add.sprite(info.x, info.y, props.label)
-  if (props.isCircle) {
-    test.setCircle()
-  }
-  test.setFrictionAir(props.frictionAir)
-  test.setMass(props.mass)
-  test.setAngle(info.angle)
-  test.type = props.type
-  test.objectId = info.objectId
-  self.objects.add(test)
-}
-
-// setBody works, but only with one set of vertices - at the moment, the objects with verts are set up as composites, so they have several sets of verts, which doesn't work with this method
-function addVertTest(self, info) {
-  const test = self.matter.add.sprite(675, 125, 'halfcookie')
-  test.setBody({
-    type: 'fromVertices',
-    verts: [ { "x":1, "y":6 }, { "x":4, "y":14 }, { "x":31, "y":58 }, { "x":88, "y":98 }, { "x":68, "y":25 }, { "x":53, "y":14 }, { "x":30, "y":5 }, { "x":9, "y":3 } ],
-    x: 675,
-    y: 125
-  })
-  test.type = 'cookie'
-  test.objectId = info.objectId
-  self.objects.add(test)
-  // console.log(test.vertices)
-  // console.log(test)
-}
-
 function removeObject(self, objectId) {
   self.objects.getChildren().forEach((object) => {
     if (objectId === object.objectId) {
@@ -266,15 +263,6 @@ function handlePlayerInput(self, playerId, input) {
   })
 }
 
-function addObstacle(self, obstacleInfo) {
-  const obstacle = self.matter.add.sprite(obstacleInfo.x, obstacleInfo.y, obstacleInfo.label)
-  obstacle.setFrictionAir(0.4)
-  obstacle.setMass(obstacleInfo.mass)
-  obstacle.type = 'obstacle'
-  obstacle.objectId = obstacleInfo.objectId
-  self.objects.add(obstacle)
-}
-
 function randomPosition(max) {
   return Math.floor(Math.random() * max) + 50
 }
@@ -284,8 +272,10 @@ function randomNumber(max) {
 }
 
 function createId() {
-  let id = 'nasdf'
-  return id
+  let S4 = function() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+ }
+ return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4())
 }
 
 const game = new Phaser.Game(config)

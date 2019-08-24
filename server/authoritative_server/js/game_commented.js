@@ -110,10 +110,10 @@ function create() {
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height);
 
   // Set up score tracker
-  // this.scores = {
-  //   blue: 0,
-  //   red: 0
-  // };
+  this.scores = {
+    blue: 0,
+    red: 0
+  };
 
   // Add first star to map and give it collision physics
   //! this.star = this.physics.add.image(randomPosition(700), randomPosition(500), 'star');
@@ -150,6 +150,26 @@ function create() {
 
     addCookie(self, objects[id]);
   }*/
+
+  //*Various working tests
+  objects['antTest'] = {
+    type: objectProps.cookies.smlcookie.type,
+    label: objectProps.cookies.smlcookie.label,
+    angle: Math.floor(Math.random() * 360),
+    x: Math.floor(Math.random() * 700) + 50,
+    y: Math.floor(Math.random() * 500) + 50,
+    objectId: 'antTest'
+  }
+  addTest(self, objects['antTest'], objectProps.cookies.smlcookie)
+  
+  objects['vertTest'] = {
+    type: 'cookie',
+    label: 'halfcookie',
+    x: 675,
+    y: 125,
+    objectId: 'vertTest'
+  }
+  addVertTest(self, objects['vertTest'])
 
   // Add obstacles to the world on generation
   let startingObstacles = {
@@ -281,6 +301,16 @@ function update() {
         object.setAngularVelocity(0);
       }
 
+      //* Kind of working applyForce acceleration
+      // if (input.up) {
+      //   Phaser.Physics.Matter.Matter.Body.applyForce(object.body, {x: object.x, y: object.y}, {
+      //     x: Math.cos(object.angle) * .010,
+      //     y: Math.sin(object.angle) * .010
+      //   })
+      // } else {
+      //   Phaser.Physics.Matter.Matter.Body.applyForce(object.body, {x:0,y:0}, {x:0,y:0})
+      // }
+
       if (input.up) {
         object.thrust(0.005);
       } else {
@@ -336,6 +366,36 @@ function addPlayer(self, playerInfo) {
   // console.log('player object:', player)
   self.objects.add(player);
   // console.log("self.objects:", self.objects)
+}
+
+//* Various working tests
+function addTest(self, info, props) {
+  const test = self.matter.add.sprite(info.x, info.y, props.label)
+  if (props.isCircle) {
+    test.setCircle()
+  }
+  test.setFrictionAir(props.frictionAir)
+  test.setMass(props.mass)
+  test.setAngle(info.angle)
+  test.type = props.type
+  test.objectId = info.objectId
+  self.objects.add(test)
+}
+
+// setBody works, but only with one set of vertices - at the moment, the objects with verts are set up as composites, so they have several sets of verts, which doesn't work with this method
+function addVertTest(self, info) {
+  const test = self.matter.add.sprite(675, 125, 'halfcookie')
+  test.setBody({
+    type: 'fromVertices',
+    verts: [ { "x":1, "y":6 }, { "x":4, "y":14 }, { "x":31, "y":58 }, { "x":88, "y":98 }, { "x":68, "y":25 }, { "x":53, "y":14 }, { "x":30, "y":5 }, { "x":9, "y":3 } ],
+    x: 675,
+    y: 125
+  })
+  test.type = 'cookie'
+  test.objectId = info.objectId
+  self.objects.add(test)
+  // console.log(test.vertices)
+  // console.log(test)
 }
 
 function removeObject(self, objectId) {

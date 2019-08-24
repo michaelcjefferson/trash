@@ -55,11 +55,11 @@ function create() {
     displayObjects(self, playerInfo, 'ant');
   })
 
-  // Handle disconnect broadcast from server - remove players as they disconnect
-  this.socket.on('disconnect', function (playerId) {
-    self.objects.getChildren().forEach(function (player) {
-      if (playerId === player.objectId) {
-        player.destroy();
+  // Handle disconnect broadcast from server - remove players as they disconnect. Also destroy objects as they need to be
+  this.socket.on('destroyobject', function (objectId) {
+    self.objects.getChildren().forEach(function (object) {
+      if (objectId === object.objectId) {
+        object.destroy();
       }
     });
   });
@@ -76,11 +76,11 @@ function create() {
     });
   });
 
-  // Handle score and star updates
-  // this.socket.on('updateScore', function (scores) {
-  //   self.blueScoreText.setText(scores.blue);
-  //   self.redScoreText.setText(scores.red);
-  // });
+  // Handle score updates
+  this.socket.on('updateScore', function (scores) {
+    self.blueScoreText.setText(scores.blue);
+    self.redScoreText.setText(scores.red);
+  });
 
   // this.socket.on('starLocation', function (starLocation) {
   //   if (!self.star) {

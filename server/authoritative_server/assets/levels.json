@@ -1,0 +1,25 @@
+{
+  "basic": {
+    "maxPlayers": 4,
+    "winnerPoints": 5,
+    "randomObstacles": 0,
+    "randomCookies": 0,
+    "obstacles": [],
+    "cookies": [
+      {
+        "label": "smlcookie",
+        "x": 700,
+        "y": 600,
+        "angle": null,
+        "team": "blue"
+      },
+      {
+        "label": "smlcookie",
+        "x": 900,
+        "y": 600,
+        "angle": null,
+        "team": "red"
+      }
+    ]
+  }
+}

@@ -33,9 +33,9 @@
       "mass": 10,
       "isCircle": true,
       "hasVertices": false,
-      "frictionAir": 0.4,
-      "friction": 0.05,
-      "bounce": 0
+      "frictionAir": 0.02,
+      "friction": 0.1,
+      "bounce": 1
     },
     "halfcookie": {
       "label": "halfcookie",
