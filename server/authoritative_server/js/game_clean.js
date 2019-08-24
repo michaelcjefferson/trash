@@ -63,33 +63,33 @@ function create() {
   })
 
   objects['a0s8dgnasndg0'] = {
-    type: objectProps.cookies.halfcookie.type,
-    label: objectProps.cookies.halfcookie.label,
-    angle: Math.floor(Math.random() * 360),
-    x: Math.floor(Math.random() * 700) + 50,
-    y: Math.floor(Math.random() * 500) + 50,
-    objectId: 'a0s8dgnasndg0'
-  }
-  addObject(self, objects['a0s8dgnasndg0'], objectProps.cookies.halfcookie)
-
-  objects['antTest'] = {
     type: objectProps.cookies.smlcookie.type,
     label: objectProps.cookies.smlcookie.label,
     angle: Math.floor(Math.random() * 360),
     x: Math.floor(Math.random() * 700) + 50,
     y: Math.floor(Math.random() * 500) + 50,
-    objectId: 'antTest'
+    objectId: 'a0s8dgnasndg0'
   }
-  addTest(self, objects['antTest'], objectProps.cookies.smlcookie)
+  addObject(self, objects['a0s8dgnasndg0'], objectProps.cookies.smlcookie)
+
+  // objects['antTest'] = {
+  //   type: objectProps.cookies.smlcookie.type,
+  //   label: objectProps.cookies.smlcookie.label,
+  //   angle: Math.floor(Math.random() * 360),
+  //   x: Math.floor(Math.random() * 700) + 50,
+  //   y: Math.floor(Math.random() * 500) + 50,
+  //   objectId: 'antTest'
+  // }
+  // addTest(self, objects['antTest'], objectProps.cookies.smlcookie)
   
-  objects['vertTest'] = {
-    type: 'cookie',
-    label: 'halfcookie',
-    x: 675,
-    y: 125,
-    objectId: 'vertTest'
-  }
-  addVertTest(self, objects['vertTest'])
+  // objects['vertTest'] = {
+  //   type: 'cookie',
+  //   label: 'halfcookie',
+  //   x: 675,
+  //   y: 125,
+  //   objectId: 'vertTest'
+  // }
+  // addVertTest(self, objects['vertTest'])
 
   io.on('connection', function (socket) {
     console.log('Somebody connected.')
@@ -150,6 +150,15 @@ function update() {
         object.thrust(0)
       }
 
+      // if (input.up) {
+      //   Phaser.Physics.Matter.Matter.Body.applyForce(object.body, {x: object.x, y: object.y}, {
+      //     x: Math.cos(object.angle) * .010,
+      //     y: Math.sin(object.angle) * .010
+      //   })
+      // } else {
+      //   Phaser.Physics.Matter.Matter.Body.applyForce(object.body, {x:0,y:0}, {x:0,y:0})
+      // }
+
       objects[object.objectId].x = object.x
       objects[object.objectId].y = object.y
       objects[object.objectId].angle = object.angle
@@ -189,6 +198,8 @@ function addObject(self, info, props) {
   //   })
   // }
   object.setFrictionAir(props.frictionAir)
+  object.setFriction(props.friction)
+  object.setBounce(props.bounce)
   object.setMass(props.mass)
   object.setAngle(info.angle)
   object.type = props.type

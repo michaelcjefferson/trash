@@ -30,10 +30,12 @@
       "label": "smlcookie",
       "type": "cookie",
       "url": "assets/75x75_Cookie.png",
-      "mass": 500,
+      "mass": 10,
       "isCircle": true,
       "hasVertices": false,
-      "frictionAir": 0.99
+      "frictionAir": 0.4,
+      "friction": 0.05,
+      "bounce": 0
     },
     "halfcookie": {
       "label": "halfcookie",
