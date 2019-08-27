@@ -15,7 +15,6 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  // TODO: Put all cookie and obstacle info in a separate dictionary to be imported by each file and iterated over
   this.load.image('smlcrumb', 'assets/20x20_Crumb.png');
   this.load.image('lrgcrumb', 'assets/50x50_Crumb.png');
   this.load.image('smlcookie', 'assets/75x75_Cookie.png');
@@ -82,14 +81,6 @@ function create() {
     self.redScoreText.setText(scores.red);
   });
 
-  // this.socket.on('starLocation', function (starLocation) {
-  //   if (!self.star) {
-  //     self.star = self.add.image(starLocation.x, starLocation.y, 'star');
-  //   } else {
-  //     self.star.setPosition(starLocation.x, starLocation.y);
-  //   }
-  // });
-
   // Set up client-side controls which will be broadcast directly to server
   this.cursors = this.input.keyboard.createCursorKeys();
   this.leftKeyPressed = false;
@@ -127,9 +118,9 @@ function displayObjects(self, objectInfo, sprite) {
   const object = self.add.sprite(objectInfo.x, objectInfo.y, sprite).setOrigin(0.5, 0.5);
   if (objectInfo.team) {
     if (objectInfo.team === 'blue') {
-      object.setTint(0x0000ff)
+      object.setTint(0x00aaff)
     } else {
-      object.setTint(0xff0000);
+      object.setTint(0xff6666);
     }
   }
   object.objectId = objectInfo.objectId;

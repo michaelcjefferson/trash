@@ -16,7 +16,10 @@
       "url": "assets/20x20_Crumb.png",
       "mass": 1,
       "isCircle": true,
-      "frictionAir": 0.4
+      "frictionAir": 0.02,
+      "friction": 0.1,
+      "bounce": 1.2,
+      "pointValue": 1
     },
     "lrgcrumb": {
       "label": "lrgcrumb",
@@ -24,7 +27,8 @@
       "url": "assets/50x50_Crumb.png",
       "mass": 1.5,
       "isCircle": true,
-      "frictionAir": 0.4
+      "frictionAir": 0.4,
+      "pointValue": 1
     },
     "smlcookie": {
       "label": "smlcookie",
@@ -35,7 +39,8 @@
       "hasVertices": false,
       "frictionAir": 0.02,
       "friction": 0.1,
-      "bounce": 1
+      "bounce": 1,
+      "pointValue": 3
     },
     "halfcookie": {
       "label": "halfcookie",
@@ -57,7 +62,8 @@
       "url": "assets/150x150_Cookie.png",
       "mass": 12,
       "isCircle": true,
-      "frictionAir": 0.4
+      "frictionAir": 0.4,
+      "pointValue": 5
     }
   },
   "obstacles": {

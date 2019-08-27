@@ -1,26 +1,47 @@
 {
   "basic": {
     "maxPlayers": 4,
-    "winnerPoints": 5,
+    "maxScore": 500,
     "randomObstacles": 0,
     "randomCookies": 0,
     "obstacles": [],
     "cookies": [
       {
         "label": "smlcookie",
-        "x": 700,
-        "y": 600,
-        "angle": null,
+        "x": 275,
+        "y": 207,
         "team": "blue",
-        "pointValue": 3
+        "pointValue": 20
       },
       {
         "label": "smlcookie",
-        "x": 900,
-        "y": 600,
-        "angle": null,
+        "x": 275,
+        "y": 873,
+        "team": "blue",
+        "pointValue": 20
+      },
+      {
+        "label": "smlcookie",
+        "x": 1645,
+        "y": 207,
         "team": "red",
-        "pointValue": 5
+        "pointValue": 20
+      },
+      {
+        "label": "smlcookie",
+        "x": 1645,
+        "y": 873,
+        "team": "red",
+        "pointValue": 20
+      },
+      {
+        "label": "smlcrumb",
+        "x": 960,
+        "y": 540,
+        "pointValue": 500,
+        "bounce": 0.2,
+        "frictionAir": 0.4,
+        "mass": 10
       }
     ]
   }

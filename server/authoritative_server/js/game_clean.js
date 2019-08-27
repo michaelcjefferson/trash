@@ -53,6 +53,17 @@ function create() {
   
   const self = this
 
+  this.resetGame = function (team) {
+    io.emit('updateScore', self.scores)
+  }
+
+  this.startResetGame = function (team) {
+    self.scores.blue = 0
+    self.scores.red = 0
+    console.log(team, ' won the game!!!!!')
+    window.setTimeout(this.resetGame, 5000, team)
+  }
+
   this.collisionEvent = function (event) {
     event.pairs.forEach((pair) => {
       const { bodyA, bodyB } = pair
@@ -63,7 +74,11 @@ function create() {
           const pointValue = bodyB.gameObject.pointValue
           removeObject(self, id)
           delete objects[id]
-          self.scores[bodyA.team] += pointValue || 1
+          if (self.scores[bodyA.team] + (pointValue || 1) >= self.scores.max) {
+            self.scores[bodyA.team] += pointValue || 1
+          } else {
+            self.scores[bodyA.team] = self.scores.max
+          }
           io.emit('destroyobject', id)
           io.emit('updateScore', self.scores)
         }
@@ -73,7 +88,11 @@ function create() {
           const pointValue = bodyA.gameObject.pointValue
           removeObject(self, id)
           delete objects[id]
-          self.scores[bodyB.team] += pointValue || 1
+          if (self.scores[bodyB.team] + (pointValue || 1) >= self.scores.max) {
+            self.scores[bodyB.team] += pointValue || 1
+          } else {
+            self.scores[bodyB.team] = self.scores.max
+          }
           io.emit('destroyobject', id)
           io.emit('updateScore', self.scores)
         }
@@ -86,8 +105,12 @@ function create() {
   // Set up score tracker
   this.scores = {
     blue: 0,
-    red: 0
+    red: 0,
+    max: undefined
   }
+
+  // Set up player maximum
+  this.maxPlayers = 100
 
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height)
 
@@ -98,7 +121,7 @@ function create() {
   this.bluegoal.label = 'bluegoal'
   this.bluegoal.type = 'goal'
   this.bluegoal.team = 'blue'
-  this.redgoal = this.matter.add.rectangle(1645, 540, 250, 150, {
+  this.redgoal = this.matter.add.rectangle(1645, 540, 350, 250, {
     isStatic: true,
     isSensor: true
   })
@@ -106,17 +129,9 @@ function create() {
   this.redgoal.type = 'goal'
   this.redgoal.team = 'red'
 
-  objects['a0s8dgnasndg0'] = {
-    type: objectProps.cookies.smlcookie.type,
-    label: objectProps.cookies.smlcookie.label,
-    angle: Math.floor(Math.random() * 360),
-    x: Math.floor(Math.random() * 700) + 50,
-    y: Math.floor(Math.random() * 500) + 50,
-    objectId: 'a0s8dgnasndg0'
-  }
-  addObject(self, objects['a0s8dgnasndg0'], objectProps.cookies.smlcookie)
-
   this.setup = function (levelType) {
+    this.maxPlayers = levels[levelType].maxPlayers
+    this.scores.max = levels[levelType].maxScore
     levels[levelType].cookies.forEach((cookie) => {
       objectId = createId()
       objects[objectId] = {
@@ -126,10 +141,10 @@ function create() {
         x: cookie.x,
         y: cookie.y,
         team: cookie.team || undefined,
-        pointValue: cookie.pointValue,
+        // pointValue: cookie.pointValue,
         objectId: objectId
       }
-      addObject(self, objects[objectId], objectProps.cookies[cookie.label])
+      addObject(self, objects[objectId], objectProps.cookies[cookie.label], cookie)
     })
   }
 
@@ -141,8 +156,8 @@ function create() {
       type: 'player',
       label: 'ant',
       angle: Math.floor(Math.random() * 360),
-      x: Math.floor(Math.random() * 700) + 50,
-      y: Math.floor(Math.random() * 500) + 50,
+      x: Math.floor(Math.random() * 1350) + 285,
+      y: Math.floor(Math.random() * 980) + 50,
       objectId: socket.id,
       team: (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue',
       input: {
@@ -176,6 +191,12 @@ function create() {
 }
 
 function update() {
+  if (this.scores.blue >= this.scores.max) {
+    this.startResetGame('blue')
+  } else if (this.scores.red >= this.scores.max) {
+    this.startResetGame('red')
+  }
+
   this.objects.getChildren().forEach((object) => {
     if (object.type === 'player') {
       const input = objects[object.objectId].input
@@ -211,36 +232,23 @@ function update() {
   io.emit('objectUpdates', objects)
 }
 
-function addObject(self, info, props) {
-  // TODO: Need to register nothing for players
+function addObject(self, info, props, levelInfo) {
   info.type === 'cookie' ? totalCookies += 1 : totalObstacles += 1
   const object = self.matter.add.sprite(info.x, info.y, props.label).setOrigin(0.5, 0.5)
   if (props.isCircle) {
     object.setCircle()
   }
-  // console.log(props.hasVertices)
-  // console.log(props.vertices)
-  // if (props.hasVertices) {
-  //   object.setBody({
-  //     type: 'fromVertices',
-  //     verts: props.vertices,
-  //     x: info.x,
-  //     y: info.y
-  //   })
-  // }
-  object.setFrictionAir(props.frictionAir)
-  object.setFriction(props.friction)
-  object.setBounce(props.bounce)
-  object.setMass(props.mass)
+  object.setFrictionAir(levelInfo.frictionAir || props.frictionAir)
+  object.setFriction(levelInfo.friction || props.friction)
+  object.setBounce(levelInfo.bounce || props.bounce)
+  object.setMass(levelInfo.mass || props.mass)
   object.setAngle(info.angle)
   object.type = props.type
   object.label = props.label
-  object.team = info.team
-  object.pointValue = info.pointValue
+  object.team = levelInfo.team
+  object.pointValue = levelInfo.pointValue || props.pointValue
   object.objectId = info.objectId
   self.objects.add(object)
-  // console.log(object)
-  // console.log(object.vertices)
 }
 
 function addPlayer(self, playerInfo) {
