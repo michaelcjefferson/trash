@@ -35,8 +35,6 @@ To view/use controller mode, go to localhost:3000/controller.
 
 ## TODO
 - Controls need reworking - holding right then left then releasing right leads to the player still rotating right even though left is held down
-- Implement imports - sprite sheets and mapping from JSON, objectProps from JSON, ideally isolate gameplay logic in a separate .js file which is imported in the main game.js file so that code organisation is easier and prettier
-- Incorporate more complex physics - applyForce on collision (and perhaps to move the player), add friction and static properties to leaves so that they act as a slower rather than a blocker
 - Add goal and point system, and work the points so that there is a snitch crumb worth 500 and a bunch of quaffle crumbs worth less
 - Decide whether it is better to customise levels and display in order/randomly, or randomly generate levels, or have an option for both. Customised levels eliminates possibility of object overlap on spawn (except for players, unless they spawn behind goal area or something)
-- Design controller page - need to make sure buttons can't be selected etc, and look pretty
+- CDN won't work as there is no internet connection at the venue - deliver all dependencies directly from server. Alternative is to set it up on AWS, but free tier is very unlikely to be fast enough - look for China-based cheaper options? If not hosted on a cloud server, need to set up docker with the image on Eddie's computer to serve, and use either rasp pi or laptop to connect to projector and display. Also need to configure router to enable easy connections. China-based server seems like best option though

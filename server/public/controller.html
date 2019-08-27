@@ -31,14 +31,15 @@
         -ms-user-select: none; /* Internet Explorer/Edge */
       }
       #up-box {
-        height: 50%;
+        height: 100%;
         width: 50%;
         display: flex;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
       }
       #leftright-box {
-        height: 50%;
+        height: 100%;
         width: 50%;
         display: flex;
         flex-direction: row;
@@ -46,18 +47,27 @@
         justify-content: center;
       }
       .button {
-        width: 8rem;
-        height: 8rem;
-        border-radius: 100%;
-        margin: 1rem;
-        background-color: paleturquoise;
-        color: darkblue;
+        height: 100%;
+        color: #333;
         display: flex;
         align-items: center;
         justify-content: center;
+        border: 1px #333 solid;
+      }
+      #left-button {
+        width: 50%;
+        background-color: darksalmon;
+      }
+      #right-button {
+        width: 50%;
+        background-color: paleturquoise;
+      }
+      #forward-button {
+        width: 100%;
+        background-color: yellowgreen;
       }
     </style>
-    <h1>ANTS</h1>
+    <!-- <h1>ANTS</h1> -->
     <div id="controller-box">
       <div id="up-box">
         <div class="button" id="forward-button">FORWARD</div>

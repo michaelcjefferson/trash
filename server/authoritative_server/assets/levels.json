@@ -11,14 +11,16 @@
         "x": 700,
         "y": 600,
         "angle": null,
-        "team": "blue"
+        "team": "blue",
+        "pointValue": 3
       },
       {
         "label": "smlcookie",
         "x": 900,
         "y": 600,
         "angle": null,
-        "team": "red"
+        "team": "red",
+        "pointValue": 5
       }
     ]
   }

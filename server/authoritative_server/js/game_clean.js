@@ -53,25 +53,30 @@ function create() {
   
   const self = this
 
-  // TODO: Check team of cookie and compare it to goal, only add points if they're opposites
   this.collisionEvent = function (event) {
     event.pairs.forEach((pair) => {
       const { bodyA, bodyB } = pair
   
       if (bodyA.type === 'goal' && bodyB.gameObject && bodyB.gameObject.type === 'cookie') {
-        const id = bodyB.gameObject.objectId
-        removeObject(self, id)
-        delete objects[id]
-        self.scores[bodyA.team] += 1
-        io.emit('destroyobject', id)
-        io.emit('updateScore', self.scores)
+        if (!bodyB.gameObject.team || bodyB.gameObject.team !== bodyA.team) {
+          const id = bodyB.gameObject.objectId
+          const pointValue = bodyB.gameObject.pointValue
+          removeObject(self, id)
+          delete objects[id]
+          self.scores[bodyA.team] += pointValue || 1
+          io.emit('destroyobject', id)
+          io.emit('updateScore', self.scores)
+        }
       } else if (bodyB.type === 'goal' && bodyA.gameObject && bodyA.gameObject.type === 'cookie') {
-        const id = bodyA.gameObject.objectId
-        removeObject(self, id)
-        delete objects[id]
-        self.scores[bodyB.team] += 1
-        io.emit('destroyobject', id)
-        io.emit('updateScore', self.scores)
+        if (!bodyA.gameObject.team || bodyA.gameObject.team !== bodyB.team) {
+          const id = bodyA.gameObject.objectId
+          const pointValue = bodyA.gameObject.pointValue
+          removeObject(self, id)
+          delete objects[id]
+          self.scores[bodyB.team] += pointValue || 1
+          io.emit('destroyobject', id)
+          io.emit('updateScore', self.scores)
+        }
       }
     })
   }
@@ -121,6 +126,7 @@ function create() {
         x: cookie.x,
         y: cookie.y,
         team: cookie.team || undefined,
+        pointValue: cookie.pointValue,
         objectId: objectId
       }
       addObject(self, objects[objectId], objectProps.cookies[cookie.label])
@@ -229,6 +235,8 @@ function addObject(self, info, props) {
   object.setAngle(info.angle)
   object.type = props.type
   object.label = props.label
+  object.team = info.team
+  object.pointValue = info.pointValue
   object.objectId = info.objectId
   self.objects.add(object)
   // console.log(object)
