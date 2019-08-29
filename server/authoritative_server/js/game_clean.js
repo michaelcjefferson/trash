@@ -33,15 +33,21 @@ const config = {
 
 function preload() {
   this.load.image('smlcrumb', 'assets/20x20_Crumb.png')
+  this.load.image('smlcrumbsnitch', 'assets/20x20_Crumb_Snitch.png')
   this.load.image('lrgcrumb', 'assets/50x50_Crumb.png')
+  this.load.image('lrgcrumbblue', 'assets/50x50_Crumb_Blue.png')
+  this.load.image('lrgcrumbred', 'assets/50x50_Crumb_Red.png')
   this.load.image('smlcookie', 'assets/75x75_Cookie.png')
-  this.load.image('halfcookie', 'assets/90x150_HalfCookie.png')
+  this.load.image('smlcookieblue', 'assets/75x75_Cookie_Blue.png')
+  this.load.image('smlcookiered', 'assets/75x75_Cookie_Red.png')
   this.load.image('lrgcookie', 'assets/150x150_Cookie.png')
+  this.load.image('lrgcookieblue', 'assets/150x150_Cookie_Blue.png')
+  this.load.image('lrgcookiered', 'assets/150x150_Cookie_Red.png')
   this.load.image('log', 'assets/50x185_Log.png')
-  this.load.image('leaf', 'assets/350x150_Leaf.png')
-  this.load.image('ant', 'assets/Antz_Player.jpg')
-  this.load.image('redgoal', 'assets/350x250_RedTeamGoal.png')
-  this.load.image('bluegoal', 'assets/350x250_BlueTeamGoal.png')
+  this.load.image('goalblue', 'assets/250x250_BlueGoal.png')
+  this.load.image('goalred', 'assets/250x250_RedGoal.png')
+  this.load.image('antblue', 'assets/Antz_Blue_Player.png')
+  this.load.image('antred', 'assets/Antz_Red_Player.png')
 
   this.load.json('objectProps', 'assets/objectProps.json')
   this.load.json('levels', 'assets/levels.json')
@@ -51,15 +57,25 @@ function create() {
   const objectProps = this.cache.json.get('objectProps')
   const levels = this.cache.json.get('levels')
   
+  this.objects = this.add.group()
+
   const self = this
 
   this.resetGame = function (team) {
     io.emit('updateScore', self.scores)
+    self.setup('football')
   }
 
   this.startResetGame = function (team) {
     self.scores.blue = 0
     self.scores.red = 0
+    for (const id of Object.keys(objects)) {
+      if (objects[id].type === 'cookie' || objects[id].type === 'obstacle') {
+        removeObject(self, id)
+        io.emit('destroyObject', id)
+        delete objects[id]
+      }
+    }
     console.log(team, ' won the game!!!!!')
     window.setTimeout(this.resetGame, 5000, team)
   }
@@ -74,12 +90,12 @@ function create() {
           const pointValue = bodyB.gameObject.pointValue
           removeObject(self, id)
           delete objects[id]
-          if (self.scores[bodyA.team] + (pointValue || 1) >= self.scores.max) {
+          if (self.scores[bodyA.team] + (pointValue || 1) <= self.scores.max) {
             self.scores[bodyA.team] += pointValue || 1
           } else {
             self.scores[bodyA.team] = self.scores.max
           }
-          io.emit('destroyobject', id)
+          io.emit('destroyObject', id)
           io.emit('updateScore', self.scores)
         }
       } else if (bodyB.type === 'goal' && bodyA.gameObject && bodyA.gameObject.type === 'cookie') {
@@ -88,19 +104,17 @@ function create() {
           const pointValue = bodyA.gameObject.pointValue
           removeObject(self, id)
           delete objects[id]
-          if (self.scores[bodyB.team] + (pointValue || 1) >= self.scores.max) {
+          if (self.scores[bodyB.team] + (pointValue || 1) <= self.scores.max) {
             self.scores[bodyB.team] += pointValue || 1
           } else {
             self.scores[bodyB.team] = self.scores.max
           }
-          io.emit('destroyobject', id)
+          io.emit('destroyObject', id)
           io.emit('updateScore', self.scores)
         }
       }
     })
   }
-
-  this.objects = this.add.group()
 
   // Set up score tracker
   this.scores = {
@@ -114,20 +128,20 @@ function create() {
 
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height)
 
-  this.bluegoal = this.matter.add.rectangle(275, 540, 350, 250, {
+  this.goalblue = this.matter.add.rectangle(125, 540, 250, 250, {
     isStatic: true,
     isSensor: true
   })
-  this.bluegoal.label = 'bluegoal'
-  this.bluegoal.type = 'goal'
-  this.bluegoal.team = 'blue'
-  this.redgoal = this.matter.add.rectangle(1645, 540, 350, 250, {
+  this.goalblue.label = 'goalblue'
+  this.goalblue.type = 'goal'
+  this.goalblue.team = 'blue'
+  this.goalred = this.matter.add.rectangle(1795, 540, 250, 250, {
     isStatic: true,
     isSensor: true
   })
-  this.redgoal.label = 'redgoal'
-  this.redgoal.type = 'goal'
-  this.redgoal.team = 'red'
+  this.goalred.label = 'goalred'
+  this.goalred.type = 'goal'
+  this.goalred.team = 'red'
 
   this.setup = function (levelType) {
     this.maxPlayers = levels[levelType].maxPlayers
@@ -141,39 +155,52 @@ function create() {
         x: cookie.x,
         y: cookie.y,
         team: cookie.team || undefined,
-        // pointValue: cookie.pointValue,
+        pointValue: cookie.pointValue,
         objectId: objectId
       }
       addObject(self, objects[objectId], objectProps.cookies[cookie.label], cookie)
     })
+    io.emit('currentObjects', objects)
   }
 
-  this.setup('basic')
+  this.setup('hogwarts')
 
   io.on('connection', function (socket) {
     console.log('Somebody connected.')
-    objects[socket.id] = {
-      type: 'player',
-      label: 'ant',
-      angle: Math.floor(Math.random() * 360),
-      x: Math.floor(Math.random() * 1350) + 285,
-      y: Math.floor(Math.random() * 980) + 50,
-      objectId: socket.id,
-      team: (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue',
-      input: {
-        left: false,
-        right: false,
-		    up: false
+    if (totalPlayers.total < self.maxPlayers) {
+      let team = (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue'
+      if (totalPlayers.red > totalPlayers.blue) {
+        team = 'blue'
+      } else if (totalPlayers.blue > totalPlayers.red) {
+        team = 'red'
       }
+      let label = 'ant' + team
+      objects[socket.id] = {
+        team: team,
+        type: 'player',
+        label: label,
+        angle: Math.floor(Math.random() * 360),
+        x: Math.floor(Math.random() * 1350) + 285,
+        y: Math.floor(Math.random() * 980) + 50,
+        objectId: socket.id,
+        input: {
+          left: false,
+          right: false,
+          up: false
+        }
+      }
+  
+      totalPlayers.total += 1
+      objects[socket.id].team === 'red' ? totalPlayers.red += 1 : totalPlayers.blue += 1
+  
+      addPlayer(self, objects[socket.id])
+  
+      socket.emit('currentObjects', objects)
+      socket.broadcast.emit('newPlayer', objects[socket.id])
+    } else {
+      socket.disconnect()
+      console.log('Connection rejected because the game is full!')
     }
-
-    totalPlayers.total += 1
-    objects[socket.id].team === 'red' ? totalPlayers.red += 1 : totalPlayers.blue += 1
-
-    addPlayer(self, objects[socket.id])
-
-    socket.emit('currentObjects', objects)
-    socket.broadcast.emit('newPlayer', objects[socket.id])
 
     socket.on('disconnect', function () {
       console.log('Somebody disconnected.')
@@ -181,7 +208,7 @@ function create() {
       objects[socket.id].team === 'red' ? totalPlayers.red -= 1 : totalPlayers.blue -= 1
       removeObject(self, socket.id)
       delete objects[socket.id]
-      io.emit('destroyobject', socket.id)
+      io.emit('destroyObject', socket.id)
     })
 
     socket.on('playerInput', function (inputData) {
@@ -252,7 +279,7 @@ function addObject(self, info, props, levelInfo) {
 }
 
 function addPlayer(self, playerInfo) {
-  const player = self.matter.add.sprite(playerInfo.x, playerInfo.y, 'ant').setOrigin(0.5, 0.5)
+  const player = self.matter.add.sprite(playerInfo.x, playerInfo.y, playerInfo.label).setOrigin(0.5, 0.5)
   //* This value manipulates top speed - lower value = higher top speed
   player.setFrictionAir(0.4)
   //* This value manipulates acceleration - lower value = higher acceleration

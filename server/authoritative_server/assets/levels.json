@@ -1,47 +1,66 @@
 {
-  "basic": {
+  "hogwarts": {
     "maxPlayers": 4,
-    "maxScore": 500,
+    "maxScore": 20,
     "randomObstacles": 0,
     "randomCookies": 0,
     "obstacles": [],
     "cookies": [
       {
-        "label": "smlcookie",
-        "x": 275,
+        "label": "smlcookieblue",
+        "x": 125,
         "y": 207,
         "team": "blue",
         "pointValue": 20
       },
       {
-        "label": "smlcookie",
-        "x": 275,
+        "label": "smlcookieblue",
+        "x": 125,
         "y": 873,
         "team": "blue",
         "pointValue": 20
       },
       {
-        "label": "smlcookie",
-        "x": 1645,
+        "label": "smlcookiered",
+        "x": 1795,
         "y": 207,
         "team": "red",
         "pointValue": 20
       },
       {
-        "label": "smlcookie",
-        "x": 1645,
+        "label": "smlcookiered",
+        "x": 1795,
         "y": 873,
         "team": "red",
         "pointValue": 20
       },
       {
-        "label": "smlcrumb",
+        "label": "smlcrumbsnitch",
         "x": 960,
         "y": 540,
         "pointValue": 500,
         "bounce": 0.2,
         "frictionAir": 0.4,
         "mass": 10
+      }
+    ]
+  },
+  "football": {
+    "maxPlayers": 10,
+    "maxScore": 5,
+    "randomObstacles": 0,
+    "randomCookies": 0,
+    "obstacles": [],
+    "cookies": [
+      {
+        "label": "smlcookie",
+        "x": 960,
+        "y": 540,
+        "team": null,
+        "pointValue": 5,
+        "frictionAir": 0.01,
+        "bounce": 4,
+        "mass": 1
       }
     ]
   }
