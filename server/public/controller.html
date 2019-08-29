@@ -56,25 +56,69 @@
       }
       #left-button {
         width: 50%;
-        background-color: darksalmon;
+        background-color: rgb(247, 239, 236);
+      }
+      #left-button:after {
+        content: '';
+        display: inline-block;
+        margin-top: 1.05em;
+        margin-left: 0.6em;
+        width: 1.4em;
+        height: 1.4em;
+        border-top: 0.5em solid #333;
+        border-right: 0.5em solid #333;
+        -moz-transform: rotate(-135deg);
+        -webkit-transform: rotate(-135deg);
+        transform: rotate(-135deg);
       }
       #right-button {
         width: 50%;
-        background-color: paleturquoise;
+        background-color: rgb(247, 239, 236);
+      }
+      #right-button:after {
+        content: '';
+        display: inline-block;
+        margin-top: 1.05em;
+        margin-left: -0.6em;
+        width: 1.4em;
+        height: 1.4em;
+        border-top: 0.5em solid #333;
+        border-right: 0.5em solid #333;
+        -moz-transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        transform: rotate(45deg);
       }
       #forward-button {
         width: 100%;
-        background-color: yellowgreen;
+        background-color: rgb(247, 239, 236);
+      }
+      #forward-button:after {
+        content: '';
+        display: inline-block;
+        margin-top: 1.4em;
+        width: 1.4em;
+        height: 1.4em;
+        border-top: 0.5em solid #333;
+        border-right: 0.5em solid #333;
+        -moz-transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
       }
     </style>
     <!-- <h1>ANTS</h1> -->
     <div id="controller-box">
       <div id="up-box">
-        <div class="button" id="forward-button">FORWARD</div>
+        <div class="button" id="forward-button">
+          <span class="forward"></span>
+        </div>
       </div>
       <div id="leftright-box">
-        <div class="button" id="left-button">LEFT</div>
-        <div class="button" id="right-button">RIGHT</div>
+        <div class="button" id="left-button">
+            <span class="left"></span>
+        </div>
+        <div class="button" id="right-button">
+          <span class="right"></span>
+        </div>
       </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>

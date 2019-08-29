@@ -103,7 +103,10 @@
       "url": "assets/150x150_Cookie_Blue.png",
       "mass": 12,
       "isCircle": true,
+      "hasVertices": false,
       "frictionAir": 0.4,
+      "friction": 0.2,
+      "bounce": 0.1,
       "pointValue": 5
     },
     "lrgcookiered": {
@@ -112,7 +115,10 @@
       "url": "assets/150x150_Cookie_Red.png",
       "mass": 12,
       "isCircle": true,
+      "hasVertices": false,
       "frictionAir": 0.4,
+      "friction": 0.2,
+      "bounce": 0.1,
       "pointValue": 5
     }
   },

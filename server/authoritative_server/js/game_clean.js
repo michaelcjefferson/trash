@@ -61,9 +61,10 @@ function create() {
 
   const self = this
 
-  this.resetGame = function (team) {
+  this.resetGame = function (newLevel) {
     io.emit('updateScore', self.scores)
-    self.setup('football')
+    io.emit('destroyGameoverText')
+    self.setup(newLevel)
   }
 
   this.startResetGame = function (team) {
@@ -76,8 +77,12 @@ function create() {
         delete objects[id]
       }
     }
-    console.log(team, ' won the game!!!!!')
-    window.setTimeout(this.resetGame, 5000, team)
+    console.log(team, 'won the game!!!!!')
+    const keys = Object.keys(levels)
+    const newLevel =  keys[keys.length * Math.random() << 0]
+    self.stealObjective = levels[newLevel].stealObjective
+    io.emit('gameoverText', team, newLevel, self.stealObjective)
+    window.setTimeout(this.resetGame, 7000, newLevel)
   }
 
   this.collisionEvent = function (event) {
@@ -88,12 +93,39 @@ function create() {
         if (!bodyB.gameObject.team || bodyB.gameObject.team !== bodyA.team) {
           const id = bodyB.gameObject.objectId
           const pointValue = bodyB.gameObject.pointValue
+          const info = objects[id].info
+          const spawnx = objects[id].spawnx
+          const spawny = objects[id].spawny
           removeObject(self, id)
           delete objects[id]
-          if (self.scores[bodyA.team] + (pointValue || 1) <= self.scores.max) {
-            self.scores[bodyA.team] += pointValue || 1
+          let team = 'blue'
+          if (self.stealObjective && bodyA.team === 'red') {
+            team = 'red'
+          } else if (!self.stealObjective && bodyA.team === 'blue') {
+            team = 'red'
+          }
+          if (self.scores[team] + (pointValue || 1) <= self.scores.max) {
+            self.scores[team] += pointValue || 1
+            if (self.scores[team] < self.scores.max) {
+              objectId = createId()
+              objects[objectId] = {
+                type: info.type,
+                label: info.label,
+                angle: info.angle || Math.floor(Math.random() * 360),
+                x: spawnx,
+                y: spawny,
+                spawnx: spawnx,
+                spawny: spawny,
+                team: info.team || undefined,
+                pointValue: info.pointValue,
+                objectId: objectId,
+                info: info
+              }
+              addObject(self, objects[objectId], objectProps.cookies[info.label], info)
+              io.emit('currentObjects', objects)
+            }
           } else {
-            self.scores[bodyA.team] = self.scores.max
+            self.scores[team] = self.scores.max
           }
           io.emit('destroyObject', id)
           io.emit('updateScore', self.scores)
@@ -102,12 +134,39 @@ function create() {
         if (!bodyA.gameObject.team || bodyA.gameObject.team !== bodyB.team) {
           const id = bodyA.gameObject.objectId
           const pointValue = bodyA.gameObject.pointValue
+          const info = objects[id].info
+          const spawnx = objects[id].spawnx
+          const spawny = objects[id].spawny
           removeObject(self, id)
           delete objects[id]
-          if (self.scores[bodyB.team] + (pointValue || 1) <= self.scores.max) {
-            self.scores[bodyB.team] += pointValue || 1
+          let team = 'blue'
+          if (self.stealObjective && bodyB.team === 'red') {
+            team = 'red'
+          } else if (!self.stealObjective && bodyB.team === 'blue') {
+            team = 'red'
+          }
+          if (self.scores[team] + (pointValue || 1) <= self.scores.max) {
+            self.scores[team] += pointValue || 1
+            if (self.scores[team] < self.scores.max) {
+              objectId = createId()
+              objects[objectId] = {
+                type: info.type,
+                label: info.label,
+                angle: info.angle || Math.floor(Math.random() * 360),
+                x: spawnx,
+                y: spawny,
+                spawnx: spawnx,
+                spawny: spawny,
+                team: info.team || undefined,
+                pointValue: info.pointValue,
+                objectId: objectId,
+                info: info
+              }
+              addObject(self, objects[objectId], objectProps.cookies[info.label], info)
+              io.emit('currentObjects', objects)
+            }
           } else {
-            self.scores[bodyB.team] = self.scores.max
+            self.scores[team] = self.scores.max
           }
           io.emit('destroyObject', id)
           io.emit('updateScore', self.scores)
@@ -125,6 +184,8 @@ function create() {
 
   // Set up player maximum
   this.maxPlayers = 100
+
+  this.stealObjective = false
 
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height)
 
@@ -154,16 +215,19 @@ function create() {
         angle: cookie.angle || Math.floor(Math.random() * 360),
         x: cookie.x,
         y: cookie.y,
+        spawnx: cookie.x,
+        spawny: cookie.y,
         team: cookie.team || undefined,
         pointValue: cookie.pointValue,
-        objectId: objectId
+        objectId: objectId,
+        info: cookie
       }
       addObject(self, objects[objectId], objectProps.cookies[cookie.label], cookie)
     })
     io.emit('currentObjects', objects)
   }
 
-  this.setup('hogwarts')
+  this.setup('football')
 
   io.on('connection', function (socket) {
     console.log('Somebody connected.')
@@ -174,13 +238,17 @@ function create() {
       } else if (totalPlayers.blue > totalPlayers.red) {
         team = 'red'
       }
+      let x = Math.floor(Math.random() * 640) + 300
+      if (team === 'red') {
+        x += 640
+      }
       let label = 'ant' + team
       objects[socket.id] = {
         team: team,
         type: 'player',
         label: label,
         angle: Math.floor(Math.random() * 360),
-        x: Math.floor(Math.random() * 1350) + 285,
+        x: x,
         y: Math.floor(Math.random() * 980) + 50,
         objectId: socket.id,
         input: {

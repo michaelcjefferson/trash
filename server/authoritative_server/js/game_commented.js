@@ -106,6 +106,82 @@ function create() {
 
   // this.players.setCollidesWith([ this.playerColliderGroup, this.cookieColliderGroup ]);
 
+    // this.collisionEvent = function (event) {
+  //   event.pairs.forEach((pair) => {
+  //     const { bodyA, bodyB } = pair
+  
+  //     if (bodyA.type === 'goal' && bodyB.gameObject && bodyB.gameObject.type === 'cookie') {
+  //       if (!bodyB.gameObject.team || bodyB.gameObject.team !== bodyA.team) {
+  //         const id = bodyB.gameObject.objectId
+  //         const pointValue = bodyB.gameObject.pointValue
+  //         let team = 'blue'
+  //         if (self.stealObjective && bodyA.team === 'red') {
+  //           team = 'red'
+  //         } else if (!self.stealObjective && bodyA.team === 'blue') {
+  //           team = 'red'
+  //         }
+  //         if (self.scores[team] + (pointValue || 1) <= self.scores.max) {
+  //           self.objects.getChildren().forEach((object) => {
+  //             if (object.objectId === id) {
+  //               let spawnx = objects[id].spawnx
+  //               let spawny = objects[id].spawny
+  //               console.log('match B:', spawnx, spawny)
+  //               console.log(object.x)
+  //               // console.log(self.matter)
+  //               self.matter.body.setPosition(object, { x: 500, y: 500 })
+  //               // object.setPosition(objects[id].spawnx, objects[id].spawny)
+  //               // object.translate(objects[id].spawnx, objects[id].spawny)
+  //               // object.setVelocity(0)
+  //               console.log(object.x)
+  //             }
+  //           })
+  //           objects[id].x = objects[id].spawnx
+  //           objects[id].y = objects[id].spawny
+  //           io.emit('objectUpdates', objects)
+  //           self.scores[team] = self.scores[team] + (pointValue || 1)
+  //         } else {
+  //           self.scores[team] = self.scores.max
+  //           removeObject(self, id)
+  //           delete objects[id]
+  //           io.emit('destroyObject', id)
+  //         }
+  //         io.emit('updateScore', self.scores)
+  //       }
+  //     } else if (bodyB.type === 'goal' && bodyA.gameObject && bodyA.gameObject.type === 'cookie') {
+  //       if (!bodyA.gameObject.team || bodyA.gameObject.team !== bodyB.team) {
+  //         const id = bodyA.gameObject.objectId
+  //         const pointValue = bodyA.gameObject.pointValue
+  //         let team = 'blue'
+  //         if (self.stealObjective && bodyB.team === 'red') {
+  //           team = 'red'
+  //         } else if (!self.stealObjective && bodyB.team === 'blue') {
+  //           team = 'red'
+  //         }
+  //         if (self.scores[team] + (pointValue || 1) <= self.scores.max) {
+  //           self.objects.getChildren().forEach((object) => {
+  //             if (object.objectId === id) {
+  //               console.log('match A')
+  //               // console.log(object)
+  //               object.setPosition(objects[id].spawnx, objects[id].spawny)
+  //               object.setVelocity(0)
+  //             }
+  //           })
+  //           objects[id].x = objects[id].spawnx
+  //           objects[id].y = objects[id].spawny
+  //           io.emit('objectUpdates', objects)
+  //           self.scores[team] = self.scores[team] + (pointValue || 1)
+  //         } else {
+  //           self.scores[team] = self.scores.max
+  //           removeObject(self, id)
+  //           delete objects[id]
+  //           io.emit('destroyObject', id)
+  //         }
+  //         io.emit('updateScore', self.scores)
+  //       }
+  //     }
+  //   })
+  // }
+
   //? World bounds
   this.matter.world.setBounds(0, 0, game.config.width, game.config.height);
 

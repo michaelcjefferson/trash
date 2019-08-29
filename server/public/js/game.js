@@ -75,6 +75,7 @@ function create() {
 
   // Handle all objects' movements
   this.socket.on('objectUpdates', function (objects) {
+    // console.log(objects)
     Object.keys(objects).forEach(function (id) {
       self.objects.getChildren().forEach(function (object) {
         if (objects[id].objectId === object.objectId) {
@@ -90,6 +91,44 @@ function create() {
     self.blueScoreText.setText(scores.blue);
     self.redScoreText.setText(scores.red);
   });
+
+  // Handle game-over screen
+  this.socket.on('gameoverText', (team, newLevel, stealObjective) => {
+    const winnerMessage = team.toUpperCase() + ' WON!!!!'
+    const newLevelMessage = 'The next level will be ' + newLevel
+    let objectiveMessage = "Push cookies into \nthe other team's goal!"
+    if (stealObjective) {
+      objectiveMessage = "Steal the other team's cookies and\nbring them back to your goal!"
+    }
+    let fill = '#0000FF'
+    if (team === 'red') {
+      fill = '#FF0000'
+    }
+    this.gameoverText = this.add.text(960, 260, winnerMessage, {
+      fontSize: '256px',
+      fill: fill,
+      backgroundColor: '#33333388'
+    }).setOrigin(0.5, 0.5)
+    this.newLevelText = this.add.text(960, 640, newLevelMessage, {
+      fontSize: '84px',
+      fill: '#ffffff',
+      backgroundColor: '#33333388'
+    }).setOrigin(0.5, 0.5)
+    this.objectiveText = this.add.text(960, 840, objectiveMessage, {
+      fontSize: '72px',
+      fill: '#ffffff',
+      backgroundColor: '#33333388'
+    }).setOrigin(0.5, 0.5).setAlign('center')
+  })
+
+  // Handle new game screen
+  this.socket.on('destroyGameoverText', () => {
+    this.gameoverText.destroy()
+    this.newLevelText.destroy()
+    this.objectiveText.destroy()
+  })
+
+  // this.blueScoreText = this.add.text(16, 16, '0', { fontSize: '72px', fill: '#0000FF' });
 
   // Set up client-side controls which will be broadcast directly to server
   this.cursors = this.input.keyboard.createCursorKeys();
