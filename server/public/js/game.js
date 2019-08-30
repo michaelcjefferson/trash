@@ -55,7 +55,7 @@ function create() {
   })
 
   // Handle disconnect broadcast from server - remove players as they disconnect. Also destroy objects as they need to be
-  this.socket.on('destroyobject', function (objectId) {
+  this.socket.on('destroyObject', function (objectId) {
     self.objects.getChildren().forEach(function (object) {
       if (objectId === object.objectId) {
         object.destroy();

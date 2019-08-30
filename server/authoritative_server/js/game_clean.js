@@ -55,11 +55,24 @@ function create() {
 
   this.resetGame = function (team) {
     io.emit('updateScore', self.scores)
+    // TODO: Iterate over level types
+    self.setup('basic')
   }
 
   this.startResetGame = function (team) {
     self.scores.blue = 0
     self.scores.red = 0
+    totalCookies = 0
+    totalObstacles = 0
+    self.objects.getChildren().forEach((object) => {
+      console.log(object.objectId, object.type)
+      if (object.type !== 'player') {
+        delete objects[object.objectId]
+        io.emit('destroyObject', object.objectid)
+        removeObject(self, object.objectId)
+      }
+    })
+    io.emit('objectupdates', objects)
     console.log(team, ' won the game!!!!!')
     window.setTimeout(this.resetGame, 5000, team)
   }
@@ -79,7 +92,7 @@ function create() {
           } else {
             self.scores[bodyA.team] = self.scores.max
           }
-          io.emit('destroyobject', id)
+          io.emit('destroyObject', id)
           io.emit('updateScore', self.scores)
         }
       } else if (bodyB.type === 'goal' && bodyA.gameObject && bodyA.gameObject.type === 'cookie') {
@@ -93,7 +106,7 @@ function create() {
           } else {
             self.scores[bodyB.team] = self.scores.max
           }
-          io.emit('destroyobject', id)
+          io.emit('destroyObject', id)
           io.emit('updateScore', self.scores)
         }
       }
@@ -181,7 +194,7 @@ function create() {
       objects[socket.id].team === 'red' ? totalPlayers.red -= 1 : totalPlayers.blue -= 1
       removeObject(self, socket.id)
       delete objects[socket.id]
-      io.emit('destroyobject', socket.id)
+      io.emit('destroyObject', socket.id)
     })
 
     socket.on('playerInput', function (inputData) {
