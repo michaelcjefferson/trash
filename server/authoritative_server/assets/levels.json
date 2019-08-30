@@ -1,47 +1,107 @@
 {
-  "basic": {
+  "quidditch": {
     "maxPlayers": 4,
     "maxScore": 500,
+    "stealObjective": false,
     "randomObstacles": 0,
     "randomCookies": 0,
     "obstacles": [],
     "cookies": [
       {
         "label": "smlcookie",
-        "x": 275,
+        "x": 125,
         "y": 207,
-        "team": "blue",
+        "team": null,
         "pointValue": 20
       },
       {
         "label": "smlcookie",
-        "x": 275,
+        "x": 125,
         "y": 873,
-        "team": "blue",
+        "team": null,
         "pointValue": 20
       },
       {
         "label": "smlcookie",
-        "x": 1645,
+        "x": 1795,
         "y": 207,
-        "team": "red",
+        "team": null,
         "pointValue": 20
       },
       {
         "label": "smlcookie",
-        "x": 1645,
+        "x": 1795,
         "y": 873,
-        "team": "red",
+        "team": null,
         "pointValue": 20
       },
       {
-        "label": "smlcrumb",
+        "label": "smlcrumbsnitch",
         "x": 960,
         "y": 540,
         "pointValue": 500,
         "bounce": 0.2,
         "frictionAir": 0.4,
+        "friction": 0.4,
         "mass": 10
+      }
+    ]
+  },
+  "thief": {
+    "maxPlayers": 10,
+    "maxScore": 20,
+    "stealObjective": true,
+    "randomObstacles": 0,
+    "randomCookies": 0,
+    "obstacles": [],
+    "cookies": [
+      {
+        "label": "smlcookieblue",
+        "x": 125,
+        "y": 207,
+        "team": "blue",
+        "pointValue": 4
+      },
+      {
+        "label": "lrgcookieblue",
+        "x": 125,
+        "y": 873,
+        "team": "blue",
+        "pointValue": 20
+      },
+      {
+        "label": "lrgcookiered",
+        "x": 1795,
+        "y": 207,
+        "team": "red",
+        "pointValue": 20
+      },
+      {
+        "label": "smlcookiered",
+        "x": 1795,
+        "y": 873,
+        "team": "red",
+        "pointValue": 4
+      }
+    ]
+  },
+  "football": {
+    "maxPlayers": 10,
+    "maxScore": 5,
+    "stealObjective": false,
+    "randomObstacles": 0,
+    "randomCookies": 0,
+    "obstacles": [],
+    "cookies": [
+      {
+        "label": "smlcookie",
+        "x": 960,
+        "y": 540,
+        "team": null,
+        "pointValue": 1,
+        "frictionAir": 0.004,
+        "bounce": 1,
+        "mass": 0.4
       }
     ]
   }

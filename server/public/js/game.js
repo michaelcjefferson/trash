@@ -15,16 +15,25 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  this.load.image('smlcrumb', 'assets/20x20_Crumb.png');
-  this.load.image('lrgcrumb', 'assets/50x50_Crumb.png');
-  this.load.image('smlcookie', 'assets/75x75_Cookie.png');
-  this.load.image('halfcookie', 'assets/90x150_HalfCookie.png');
-  this.load.image('lrgcookie', 'assets/150x150_Cookie.png');
-  this.load.image('log', 'assets/50x185_Log.png');
-  this.load.image('leaf', 'assets/350x150_Leaf.png');
-  this.load.image('ant', 'assets/Antz_Player.jpg');
-  this.load.image('redgoal', 'assets/350x250_RedTeamGoal.png');
-  this.load.image('bluegoal', 'assets/350x250_BlueTeamGoal.png');
+  this.load.image('smlcrumb', 'assets/20x20_Crumb.png')
+  this.load.image('smlcrumbsnitch', 'assets/20x20_Crumb_Snitch.png')
+  this.load.image('lrgcrumb', 'assets/50x50_Crumb.png')
+  this.load.image('lrgcrumbblue', 'assets/50x50_Crumb_Blue.png')
+  this.load.image('lrgcrumbred', 'assets/50x50_Crumb_Red.png')
+  this.load.image('smlcookie', 'assets/75x75_Cookie.png')
+  this.load.image('smlcookieblue', 'assets/75x75_Cookie_Blue.png')
+  this.load.image('smlcookiered', 'assets/75x75_Cookie_Red.png')
+  this.load.image('lrgcookie', 'assets/150x150_Cookie.png')
+  this.load.image('lrgcookieblue', 'assets/150x150_Cookie_Blue.png')
+  this.load.image('lrgcookiered', 'assets/150x150_Cookie_Red.png')
+  this.load.image('log', 'assets/50x185_Log.png')
+  this.load.image('goalblue', 'assets/250x250_BlueGoal.png')
+  this.load.image('goalred', 'assets/250x250_RedGoal.png')
+  this.load.image('teamlineblue', 'assets/300x1080_Blue_Team_Line.png')
+  this.load.image('teamlinered', 'assets/300x1080_Red_Team_Line.png')
+  this.load.image('background', 'assets/1920x1080_background.png')
+  this.load.image('antblue', 'assets/Antz_Blue_Player.png')
+  this.load.image('antred', 'assets/Antz_Red_Player.png')
 }
 
 function create() {
@@ -32,26 +41,27 @@ function create() {
   this.socket = io();
   this.objects = this.add.group();
 
-  this.blueGoal = this.add.sprite(275, 540, 'bluegoal').setOrigin(0.5, 0.5);
-  this.redGoal = this.add.sprite(1645, 540, 'redgoal').setOrigin(0.5, 0.5);
+  this.background = this.add.image(960, 540, 'background').setOrigin(0.5, 0.5)
 
-  this.blueScoreText = this.add.text(16, 16, '0', { fontSize: '72px', fill: '#0000FF' });
-  this.redScoreText = this.add.text(1904, 16, '0', { fontSize: '72px', fill: '#FF0000' }).setOrigin(1, 0);
+  this.blueTeamLine = this.add.image(150, 540, 'teamlineblue').setOrigin(0.5, 0.5)
+  this.redTeamLine = this.add.image(1770, 540, 'teamlinered').setOrigin(0.5, 0.5)
+
+  this.blueGoal = this.add.sprite(125, 540, 'goalblue').setOrigin(0.5, 0.5);
+  this.redGoal = this.add.sprite(1795, 540, 'goalred').setOrigin(0.5, 0.5);
+
+  this.blueScoreText = this.add.text(16, 16, '0', { fontSize: '72px', fill: '#0000FF', backgroundColor: '#dddddd88' });
+  this.redScoreText = this.add.text(1904, 16, '0', { fontSize: '72px', fill: '#FF0000', backgroundColor: '#dddddd88' }).setOrigin(1, 0);
 
   // Handle currentPlayers broadcast from server - update players list and display them correctly
   this.socket.on('currentObjects', function (objects) {
     Object.keys(objects).forEach(function (id) {
-      if (objects[id].objectId === self.socket.id) {
-        displayObjects(self, objects[id], 'ant');
-      } else {
-        displayObjects(self, objects[id], objects[id].label);
-      }
+      displayObjects(self, objects[id], objects[id].label);
     });
   });
 
   // Handle newPlayer broadcast from server - add new player to display
   this.socket.on('newPlayer', function (playerInfo) {
-    displayObjects(self, playerInfo, 'ant');
+    displayObjects(self, playerInfo, playerInfo.label);
   })
 
   // Handle disconnect broadcast from server - remove players as they disconnect. Also destroy objects as they need to be
@@ -65,6 +75,7 @@ function create() {
 
   // Handle all objects' movements
   this.socket.on('objectUpdates', function (objects) {
+    // console.log(objects)
     Object.keys(objects).forEach(function (id) {
       self.objects.getChildren().forEach(function (object) {
         if (objects[id].objectId === object.objectId) {
@@ -80,6 +91,44 @@ function create() {
     self.blueScoreText.setText(scores.blue);
     self.redScoreText.setText(scores.red);
   });
+
+  // Handle game-over screen
+  this.socket.on('gameoverText', (team, newLevel, stealObjective) => {
+    const winnerMessage = team.toUpperCase() + ' WON!!!!'
+    const newLevelMessage = 'The next level will be ' + newLevel
+    let objectiveMessage = "Push cookies into \nthe other team's goal!"
+    if (stealObjective) {
+      objectiveMessage = "Steal the other team's cookies and\nbring them back to your goal!"
+    }
+    let fill = '#0000FF'
+    if (team === 'red') {
+      fill = '#FF0000'
+    }
+    this.gameoverText = this.add.text(960, 260, winnerMessage, {
+      fontSize: '256px',
+      fill: fill,
+      backgroundColor: '#33333388'
+    }).setOrigin(0.5, 0.5)
+    this.newLevelText = this.add.text(960, 640, newLevelMessage, {
+      fontSize: '84px',
+      fill: '#ffffff',
+      backgroundColor: '#33333388'
+    }).setOrigin(0.5, 0.5)
+    this.objectiveText = this.add.text(960, 840, objectiveMessage, {
+      fontSize: '72px',
+      fill: '#ffffff',
+      backgroundColor: '#33333388'
+    }).setOrigin(0.5, 0.5).setAlign('center')
+  })
+
+  // Handle new game screen
+  this.socket.on('destroyGameoverText', () => {
+    this.gameoverText.destroy()
+    this.newLevelText.destroy()
+    this.objectiveText.destroy()
+  })
+
+  // this.blueScoreText = this.add.text(16, 16, '0', { fontSize: '72px', fill: '#0000FF' });
 
   // Set up client-side controls which will be broadcast directly to server
   this.cursors = this.input.keyboard.createCursorKeys();
@@ -115,14 +164,7 @@ function update() {
 }
 
 function displayObjects(self, objectInfo, sprite) {
-  const object = self.add.sprite(objectInfo.x, objectInfo.y, sprite).setOrigin(0.5, 0.5);
-  if (objectInfo.team) {
-    if (objectInfo.team === 'blue') {
-      object.setTint(0x00aaff)
-    } else {
-      object.setTint(0xff6666);
-    }
-  }
+  const object = self.add.sprite(objectInfo.x, objectInfo.y, sprite).setOrigin(0.5, 0.5)
   object.objectId = objectInfo.objectId;
   self.objects.add(object);
 }

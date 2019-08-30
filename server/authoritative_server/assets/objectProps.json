@@ -1,14 +1,4 @@
 {
-  "players": {
-    "ant": {
-      "label": "ant",
-      "type": "player",
-      "url": "assets/Antz_Player.jpg",
-      "mass": 1,
-      "isCircle": false,
-      "frictionAir": 0.4
-    }
-  },
   "cookies": {
     "smlcrumb": {
       "label": "smlcrumb",
@@ -21,10 +11,39 @@
       "bounce": 1.2,
       "pointValue": 1
     },
+    "smlcrumbsnitch": {
+      "label": "smlcrumbsnitch",
+      "type": "cookie",
+      "url": "assets/20x20_Crumb_Snitch.png",
+      "mass": 1,
+      "isCircle": true,
+      "frictionAir": 0.02,
+      "friction": 0.1,
+      "bounce": 1.2,
+      "pointValue": 1
+    },
     "lrgcrumb": {
       "label": "lrgcrumb",
       "type": "cookie",
       "url": "assets/50x50_Crumb.png",
+      "mass": 1.5,
+      "isCircle": true,
+      "frictionAir": 0.4,
+      "pointValue": 1
+    },
+    "lrgcrumbblue": {
+      "label": "lrgcrumbblue",
+      "type": "cookie",
+      "url": "assets/50x50_Crumb_Blue.png",
+      "mass": 1.5,
+      "isCircle": true,
+      "frictionAir": 0.4,
+      "pointValue": 1
+    },
+    "lrgcrumbred": {
+      "label": "lrgcrumbred",
+      "type": "cookie",
+      "url": "assets/50x50_Crumb_Red.png",
       "mass": 1.5,
       "isCircle": true,
       "frictionAir": 0.4,
@@ -42,19 +61,29 @@
       "bounce": 1,
       "pointValue": 3
     },
-    "halfcookie": {
-      "label": "halfcookie",
+    "smlcookieblue": {
+      "label": "smlcookieblue",
       "type": "cookie",
-      "url": "assets/90x150_HalfCookie.png",
-      "mass": 7,
-      "isCircle": false,
-      "hasVertices": true,
-      "vertices": [
-        [ { "x":1, "y":6 }, { "x":4, "y":14 }, { "x":31, "y":58 }, { "x":88, "y":98 }, { "x":68, "y":25 }, { "x":53, "y":14 }, { "x":30, "y":5 }, { "x":9, "y":3 } ],
-        [ { "x":2, "y":96 }, { "x":43, "y":150 }, { "x":69, "y":133 }, { "x":88, "y":98 }, { "x":31, "y":58 } ],
-        [ { "x":83, "y":49 }, { "x":68, "y":25 }, { "x":88, "y":98 }, { "x":89, "y":81 }, { "x":87, "y":63 } ]
-      ],
-      "frictionAir": 0.4
+      "url": "assets/75x75_Cookie_Blue.png",
+      "mass": 10,
+      "isCircle": true,
+      "hasVertices": false,
+      "frictionAir": 0.02,
+      "friction": 0.1,
+      "bounce": 1,
+      "pointValue": 3
+    },
+    "smlcookiered": {
+      "label": "smlcookiered",
+      "type": "cookie",
+      "url": "assets/75x75_Cookie_Red.png",
+      "mass": 10,
+      "isCircle": true,
+      "hasVertices": false,
+      "frictionAir": 0.02,
+      "friction": 0.1,
+      "bounce": 1,
+      "pointValue": 3
     },
     "lrgcookie": {
       "label": "lrgcookie",
@@ -62,7 +91,34 @@
       "url": "assets/150x150_Cookie.png",
       "mass": 12,
       "isCircle": true,
+      "hasVertices": false,
       "frictionAir": 0.4,
+      "friction": 0.2,
+      "bounce": 0.1,
+      "pointValue": 5
+    },
+    "lrgcookieblue": {
+      "label": "lrgcookieblue",
+      "type": "cookie",
+      "url": "assets/150x150_Cookie_Blue.png",
+      "mass": 12,
+      "isCircle": true,
+      "hasVertices": false,
+      "frictionAir": 0.4,
+      "friction": 0.2,
+      "bounce": 0.1,
+      "pointValue": 5
+    },
+    "lrgcookiered": {
+      "label": "lrgcookiered",
+      "type": "cookie",
+      "url": "assets/150x150_Cookie_Red.png",
+      "mass": 12,
+      "isCircle": true,
+      "hasVertices": false,
+      "frictionAir": 0.4,
+      "friction": 0.2,
+      "bounce": 0.1,
       "pointValue": 5
     }
   },
@@ -74,34 +130,6 @@
       "mass": 10,
       "isCircle": false,
       "frictionAir": 0.4
-    },
-    "leaf": {
-      "label": "leaf",
-      "type": "obstacle",
-      "url": "assets/350x150_Leaf.png",
-      "mass": 6,
-      "isCircle": false,
-      "frictionAir": 0.4
-    }
-  },
-  "goals": {
-    "redgoal": {
-      "label": "redgoal",
-      "type": "goal",
-      "url": "assets/350x250_RedTeamGoal.png",
-      "mass": 1,
-      "isCircle": false,
-      "frictionAir": 0.4,
-      "isStatic": true
-    },
-    "bluegoal": {
-      "label": "bluegoal",
-      "type": "goal",
-      "url": "assets/350x250_BlueTeamGoal.png",
-      "mass": 1,
-      "isCircle": false,
-      "frictionAir": 0.4,
-      "isStatic": true
     }
   }
 }
