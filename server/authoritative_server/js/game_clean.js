@@ -71,7 +71,6 @@ function create() {
     self.scores.blue = 0
     self.scores.red = 0
     for (const id of Object.keys(objects)) {
-      console.log(objects)
       if (objects[id].type !== 'player') {
         removeObject(self, id)
         io.emit('destroyObject', id)
