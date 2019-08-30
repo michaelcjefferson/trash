@@ -26,16 +26,24 @@ app.use(helmet());
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/contoller.html')
-});
-
 app.get('/spectate', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html')
+  console.log('sending spectate')
+  res.sendFile(__dirname + '/public/spectate.html')
 });
 
 app.get('/controller', (req, res) => {
-  res.sendFile(__dirname + '/public/controller.html')
+  console.log('sending controller')
+  res.sendFile(__dirname + '/public/index.html')
+});
+
+app.get('/', (req, res) => {
+  console.log('redirecting')
+  res.redirect('/contoller')
+});
+
+app.get('*', (req, res) => {
+  console.log('catch all')
+  res.sendFile(__dirname + '/public/index.html')
 });
 
 function setupAuthoritativePhaser() {
