@@ -557,3 +557,38 @@ function addTest(self, info) {
 const game = new Phaser.Game(config);
 
 window.gameLoaded();
+
+
+  // "maze": {
+  //   "maxPlayers": 100,
+  //   "maxScore": 5,
+  //   "stealObjective": false,
+  //   "randomObstacles": {
+  //     "logs": {
+  //       "label": "log",
+  //       "number": 6
+  //     }
+  //   },
+  //   "randomCookies": {},
+  //   "obstacles": [
+  //     {
+  //       "label": "log",
+  //       "x": 700,
+  //       "y": 200,
+  //       "team": null,
+  //       "angle": 90
+  //     }
+  //   ],
+  //   "cookies": [
+  //     {
+  //       "label": "smlcookie",
+  //       "x": 960,
+  //       "y": 540,
+  //       "team": null,
+  //       "pointValue": 1,
+  //       "frictionAir": 0.004,
+  //       "bounce": 1,
+  //       "mass": 0.4
+  //     }
+  //   ]
+  // }

@@ -27,22 +27,18 @@ app.use(helmet());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/spectate', (req, res) => {
-  console.log('sending spectate')
   res.sendFile(__dirname + '/public/spectate.html')
 });
 
 app.get('/controller', (req, res) => {
-  console.log('sending controller')
   res.sendFile(__dirname + '/public/index.html')
 });
 
 app.get('/', (req, res) => {
-  console.log('redirecting')
   res.redirect('/contoller')
 });
 
 app.get('*', (req, res) => {
-  console.log('catch all')
   res.sendFile(__dirname + '/public/index.html')
 });
 

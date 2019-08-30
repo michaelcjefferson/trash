@@ -1,37 +1,37 @@
 {
   "quidditch": {
-    "maxPlayers": 4,
+    "maxPlayers": 100,
     "maxScore": 500,
     "stealObjective": false,
-    "randomObstacles": 0,
-    "randomCookies": 0,
+    "randomObstacles": {},
+    "randomCookies": {},
     "obstacles": [],
     "cookies": [
       {
-        "label": "smlcookie",
-        "x": 125,
-        "y": 207,
+        "label": "lrgcrumb",
+        "x": 760,
+        "y": 340,
         "team": null,
         "pointValue": 20
       },
       {
-        "label": "smlcookie",
-        "x": 125,
-        "y": 873,
+        "label": "lrgcrumb",
+        "x": 760,
+        "y": 740,
         "team": null,
         "pointValue": 20
       },
       {
-        "label": "smlcookie",
-        "x": 1795,
-        "y": 207,
+        "label": "lrgcrumb",
+        "x": 1160,
+        "y": 340,
         "team": null,
         "pointValue": 20
       },
       {
-        "label": "smlcookie",
-        "x": 1795,
-        "y": 873,
+        "label": "lrgcrumb",
+        "x": 1160,
+        "y": 740,
         "team": null,
         "pointValue": 20
       },
@@ -48,11 +48,11 @@
     ]
   },
   "thief": {
-    "maxPlayers": 10,
+    "maxPlayers": 100,
     "maxScore": 20,
     "stealObjective": true,
-    "randomObstacles": 0,
-    "randomCookies": 0,
+    "randomObstacles": {},
+    "randomCookies": {},
     "obstacles": [],
     "cookies": [
       {
@@ -86,11 +86,11 @@
     ]
   },
   "football": {
-    "maxPlayers": 10,
+    "maxPlayers": 100,
     "maxScore": 5,
     "stealObjective": false,
-    "randomObstacles": 0,
-    "randomCookies": 0,
+    "randomObstacles": {},
+    "randomCookies": {},
     "obstacles": [],
     "cookies": [
       {

@@ -26,10 +26,13 @@
       "label": "lrgcrumb",
       "type": "cookie",
       "url": "assets/50x50_Crumb.png",
-      "mass": 1.5,
+      "mass": 10,
       "isCircle": true,
-      "frictionAir": 0.4,
-      "pointValue": 1
+      "hasVertices": false,
+      "frictionAir": 0.02,
+      "friction": 0.1,
+      "bounce": 1,
+      "pointValue": 3
     },
     "lrgcrumbblue": {
       "label": "lrgcrumbblue",
@@ -127,9 +130,12 @@
       "label": "log",
       "type": "obstacle",
       "url": "assets/50x185_Log.png",
-      "mass": 10,
+      "mass": 100,
       "isCircle": false,
-      "frictionAir": 0.4
+      "hasVertices": false,
+      "frictionAir": 1,
+      "friction": 0.2,
+      "bounce": 0
     }
   }
 }

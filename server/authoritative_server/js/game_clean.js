@@ -107,22 +107,7 @@ function create() {
           if (self.scores[team] + (pointValue || 1) <= self.scores.max) {
             self.scores[team] += pointValue || 1
             if (self.scores[team] < self.scores.max) {
-              objectId = createId()
-              objects[objectId] = {
-                type: info.type,
-                label: info.label,
-                angle: info.angle || Math.floor(Math.random() * 360),
-                x: spawnx,
-                y: spawny,
-                spawnx: spawnx,
-                spawny: spawny,
-                team: info.team || undefined,
-                pointValue: info.pointValue,
-                objectId: objectId,
-                info: info
-              }
-              addObject(self, objects[objectId], objectProps.cookies[info.label], info)
-              io.emit('currentObjects', objects)
+              window.setTimeout(respawnObject, 1000, info, spawnx, spawny, objectProps.cookies[info.label], self)
             }
           } else {
             self.scores[team] = self.scores.max
@@ -148,22 +133,7 @@ function create() {
           if (self.scores[team] + (pointValue || 1) <= self.scores.max) {
             self.scores[team] += pointValue || 1
             if (self.scores[team] < self.scores.max) {
-              objectId = createId()
-              objects[objectId] = {
-                type: info.type,
-                label: info.label,
-                angle: info.angle || Math.floor(Math.random() * 360),
-                x: spawnx,
-                y: spawny,
-                spawnx: spawnx,
-                spawny: spawny,
-                team: info.team || undefined,
-                pointValue: info.pointValue,
-                objectId: objectId,
-                info: info
-              }
-              addObject(self, objects[objectId], objectProps.cookies[info.label], info)
-              io.emit('currentObjects', objects)
+              window.setTimeout(respawnObject, 1000, info, spawnx, spawny, objectProps.cookies[info.label], self)
             }
           } else {
             self.scores[team] = self.scores.max
@@ -219,15 +189,39 @@ function create() {
         spawny: cookie.y,
         team: cookie.team || undefined,
         pointValue: cookie.pointValue,
+        isStatic: cookie.isStatic || undefined,
         objectId: objectId,
         info: cookie
       }
       addObject(self, objects[objectId], objectProps.cookies[cookie.label], cookie)
     })
+    // levels[levelType].obstacles.forEach((obstacle) => {
+    //   objectId = createId()
+    //   objects[objectId] = {
+    //     type: 'obstacle',
+    //     label: obstacle.label,
+    //     angle: obstacle.angle || Math.floor(Math.random() * 360),
+    //     x: obstacle.x,
+    //     y: obstacle.y,
+    //     spawnx: obstacle.x,
+    //     spawny: obstacle.y,
+    //     team: obstacle.team || undefined,
+    //     pointValue: obstacle.pointValue || undefined,
+    //     isStatic: obstacle.isStatic || undefined,
+    //     objectId: objectId,
+    //     info: obstacle
+    //   }
+    //   addObject(self, objects[objectId], objectProps.obstacles[obstacle.label], obstacle)
+    // })
+    // levels[levelType].randomObstacles.forEach((obstacle) => {
+    //   for (const i of Array(levels[levelType].randomObstacles[obstacle.number])) {
+    //     console.log(i)
+    //   }
+    // })
     io.emit('currentObjects', objects)
   }
 
-  this.setup('thief')
+  this.setup('maze')
 
   io.on('connection', function (socket) {
     console.log('Somebody connected.')
@@ -333,17 +327,42 @@ function addObject(self, info, props, levelInfo) {
   if (props.isCircle) {
     object.setCircle()
   }
-  object.setFrictionAir(levelInfo.frictionAir || props.frictionAir)
-  object.setFriction(levelInfo.friction || props.friction)
-  object.setBounce(levelInfo.bounce || props.bounce)
-  object.setMass(levelInfo.mass || props.mass)
+  //! Not working
+  if (info.isStatic || props.isStatic) {
+    // object.setStatic()
+    self.matter.body.setStatic(object)
+  } else {
+    object.setFrictionAir(levelInfo.frictionAir || props.frictionAir)
+    object.setFriction(levelInfo.friction || props.friction)
+    object.setBounce(levelInfo.bounce || props.bounce)
+    object.setMass(levelInfo.mass || props.mass)
+  }
   object.setAngle(info.angle)
   object.type = props.type
   object.label = props.label
-  object.team = levelInfo.team
+  object.team = levelInfo.team || undefined
   object.pointValue = levelInfo.pointValue || props.pointValue
   object.objectId = info.objectId
   self.objects.add(object)
+}
+
+function respawnObject(info, spawnx, spawny, props, self) {
+  objectId = createId()
+  objects[objectId] = {
+    type: info.type,
+    label: info.label,
+    angle: info.angle || Math.floor(Math.random() * 360),
+    x: spawnx,
+    y: spawny,
+    spawnx: spawnx,
+    spawny: spawny,
+    team: info.team || undefined,
+    pointValue: info.pointValue,
+    objectId: objectId,
+    info: info
+  }
+  addObject(self, objects[objectId], props, info)
+  io.emit('currentObjects', objects)
 }
 
 function addPlayer(self, playerInfo) {
