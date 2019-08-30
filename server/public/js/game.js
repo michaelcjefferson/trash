@@ -49,8 +49,8 @@ function create() {
   this.blueGoal = this.add.sprite(125, 540, 'goalblue').setOrigin(0.5, 0.5);
   this.redGoal = this.add.sprite(1795, 540, 'goalred').setOrigin(0.5, 0.5);
 
-  this.blueScoreText = this.add.text(16, 16, '0', { fontSize: '72px', fill: '#0000FF' });
-  this.redScoreText = this.add.text(1904, 16, '0', { fontSize: '72px', fill: '#FF0000' }).setOrigin(1, 0);
+  this.blueScoreText = this.add.text(16, 16, '0', { fontSize: '72px', fill: '#0000FF', backgroundColor: '#dddddd88' });
+  this.redScoreText = this.add.text(1904, 16, '0', { fontSize: '72px', fill: '#FF0000', backgroundColor: '#dddddd88' }).setOrigin(1, 0);
 
   // Handle currentPlayers broadcast from server - update players list and display them correctly
   this.socket.on('currentObjects', function (objects) {

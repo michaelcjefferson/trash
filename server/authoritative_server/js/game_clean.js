@@ -71,7 +71,8 @@ function create() {
     self.scores.blue = 0
     self.scores.red = 0
     for (const id of Object.keys(objects)) {
-      if (objects[id].type === 'cookie' || objects[id].type === 'obstacle') {
+      console.log(objects)
+      if (objects[id].type !== 'player') {
         removeObject(self, id)
         io.emit('destroyObject', id)
         delete objects[id]
@@ -227,7 +228,7 @@ function create() {
     io.emit('currentObjects', objects)
   }
 
-  this.setup('football')
+  this.setup('thief')
 
   io.on('connection', function (socket) {
     console.log('Somebody connected.')

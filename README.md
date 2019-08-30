@@ -38,8 +38,8 @@ To view/use controller mode, go to localhost:3000/controller.
 - If possible, include some info on the screen which tells the players how many points each cookie is worth, and the win condition
 - CDN won't work as there is no internet connection at the venue - deliver all dependencies directly from server. Alternative is to set it up on AWS, but free tier is very unlikely to be fast enough - look for China-based cheaper options? If not hosted on a cloud server, need to set up docker with the image on Eddie's computer to serve, and use either rasp pi or laptop to connect to projector and display. Also need to configure router to enable easy connections. China-based server seems like best option though
 - Bounce connections when maxPlayers is reached (needs to be done in index.js - use [this repo](https://github.com/mariotacke/blog-single-user-websocket) to implement that plus prevent multiple connections from the same user). This currently works at a basic level, but no notification is given to the person trying to connect, they still get a controller.
-- Score needs transparent white background so that it can be seen more clearly
+- Timeout for players who haven't moved in 30 seconds? And send notification to user so that they know they've been timed out
 
 ## BUGS
-- On testing, a red cookie respawned even though the game was won. Test further
-- Spectator mode still spawns an ant
+- Spectator mode still spawns an ant - in get request define whether it is from a spectator or controller, and only add player if it's a controller
+- New cookie spawns often seem slightly off target, especially when in the middle of the map
